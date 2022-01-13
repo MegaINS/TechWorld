@@ -1,0 +1,17 @@
+# Project exclude paths
+/.bsp/
+/.idea/
+/logs/
+/client/target/
+/common/target/
+/project/target/
+/server/target/
+/target/
+
+
+
+
+
+
+
+
