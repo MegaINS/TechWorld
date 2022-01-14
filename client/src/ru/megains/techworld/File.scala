@@ -76,7 +76,7 @@ object File {
                     if (rbc != null) rbc.close()
                 }
             }catch {
-                case e: Throwable => println( "ioResourceToByteBuffer")
+                case e: Throwable => println( s"ioResourceToByteBuffer $resource")
             }
         }
 

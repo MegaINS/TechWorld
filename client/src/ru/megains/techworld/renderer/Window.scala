@@ -1,4 +1,4 @@
-package ru.megains.techworld.render
+package ru.megains.techworld.renderer
 
 
 import org.lwjgl.glfw.Callbacks.glfwFreeCallbacks

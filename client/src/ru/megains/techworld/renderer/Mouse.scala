@@ -1,10 +1,10 @@
-package ru.megains.techworld.render
+package ru.megains.techworld.renderer
 
 import org.lwjgl.glfw.GLFW._
 import ru.megains.techworld.TechWorld
 
 
-object MouseKeyboard {
+object Mouse {
 
     var x: Double = 0
     var y: Double = 0
