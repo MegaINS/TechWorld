@@ -49,7 +49,7 @@ class TechWorld(config: Configuration) {
     }
 
     def update(): Unit = {
-
+        guiManager.update()
     }
 
     def gameLoop(): Unit = {

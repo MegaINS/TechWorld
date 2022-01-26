@@ -7,10 +7,10 @@ class GuiMainMenu() extends GuiScreen {
 
 
     val buttonSingleGame: MButton = new MButton("SingleGame", 300, 40, _ => {
-       // sceneGui.setGuiScreen(new GuiSelectWorld(orangeM,this))
+        game.setScreen(new GuiSelectWorld(this))
     })
     val buttonMultiPlayerGame: MButton = new MButton("MultiPlayerGame", 300, 40, _ => {
-       // sceneGui.setGuiScreen(new GuiMultiPlayer(orangeM,this))
+        game.setScreen(new GuiMultiPlayer(this))
     })
     val buttonOption: MButton = new MButton("Option", 300, 40, _ => {
         game.setScreen(new GuiGameSettings( this))

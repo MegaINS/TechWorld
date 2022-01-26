@@ -15,7 +15,6 @@ void main() {
 
 
     vec4 texture = texture(textureMap, Ver.texCoord);
-    fragColor = vec4(1) * Ver.color ;
+    fragColor = texture * Ver.color ;
 
-    fragColor *=  texture;
 }

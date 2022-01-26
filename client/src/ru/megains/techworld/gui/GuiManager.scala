@@ -11,6 +11,7 @@ import ru.megains.techworld.renderer.shader.data.Shader
 class GuiManager(game: TechWorld) {
 
 
+
     val Z_FAR: Float = 100
     var shader: Shader = ShaderManager.guiShader
     var camera: OrthographicCamera = new OrthographicCamera(0, game.window.width, game.window.height, 0, -100, Z_FAR)
@@ -51,6 +52,12 @@ class GuiManager(game: TechWorld) {
         glDisable(GL_BLEND)
         glDisable(GL_CULL_FACE)
         glEnable(GL_DEPTH_TEST)
+    }
+
+    def update(): Unit = {
+        if (guiScreen != null) {
+            guiScreen.update()
+        }
     }
 
     def runTickMouse(button: Int, action: Int, mods: Int): Unit = {

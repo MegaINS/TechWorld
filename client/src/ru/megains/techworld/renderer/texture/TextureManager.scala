@@ -11,7 +11,8 @@ object TextureManager {
     var currentTexture: TTexture = _
     val missingTexture = new Texture("textures/missing.png")
     val baseTexture = new Texture("textures/base.png")
-
+    loadTexture("missing", missingTexture)
+    loadTexture("base", baseTexture)
 
     def bindTexture(texture: TTexture): Unit = {
 
