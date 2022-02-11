@@ -13,9 +13,10 @@ version := projectVersion
 
 lazy val common = project
         .settings(
-            name := "TechWorldCommon",
+            name := "Common",
             version := projectVersion,
             Compile / scalaSource := baseDirectory.value / "src",
+            Compile / resourceDirectory := baseDirectory.value / "resources",
             scalaVersion := projectScalaVersion,
             libraryDependencies ++= Seq(
                 "org.joml" % "joml" % "1.9.0",
@@ -30,13 +31,12 @@ lazy val common = project
 
 lazy val client = project
         .settings(
-            name := "TechWorldClient",
+            name := "Client",
             version := projectVersion,
             Compile / scalaSource := baseDirectory.value / "src",
             Compile / resourceDirectory := baseDirectory.value / "resources",
             scalaVersion := projectScalaVersion,
             libraryDependencies ++= Seq(
-                "org.joml" % "joml" % "1.9.0",
                 "org.lwjgl" % "lwjgl" % lwjglVersion,
                 "org.lwjgl" % "lwjgl-glfw" % lwjglVersion,
                 "org.lwjgl" % "lwjgl-opengl" % lwjglVersion,
@@ -54,7 +54,7 @@ lazy val client = project
 
 lazy val server = project
         .settings(
-            name := "TechWorldServer",
+            name := "Server",
             version := projectVersion,
             Compile / scalaSource := baseDirectory.value / "src",
             Compile / resourceDirectory := baseDirectory.value / "resources",
