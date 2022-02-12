@@ -30,6 +30,8 @@ class NetworkManager(packetProcess: IPacketProcessHandler) extends SimpleChannel
     }
 
 
+
+
     override def exceptionCaught(ctx: ChannelHandlerContext, cause: Throwable): Unit = {
         log.info("exceptionCaught", cause)
         closeChannel("exceptionCaught")
@@ -110,7 +112,6 @@ class NetworkManager(packetProcess: IPacketProcessHandler) extends SimpleChannel
 
 
     def disconnect(msg: String): Unit ={
-       //sendPacket(new SPacketDisconnect(msg))
         closeChannel(msg)
     }
     def closeChannel(error: String): Unit = {
@@ -118,9 +119,7 @@ class NetworkManager(packetProcess: IPacketProcessHandler) extends SimpleChannel
         if (channel.isOpen) {
             channel.close().awaitUninterruptibly
         }
-//        if(nioEventLoopGroup!= null){
-//            nioEventLoopGroup.shutdownGracefully()
-//        }
+
     }
 
 
@@ -141,17 +140,6 @@ class NetworkManager(packetProcess: IPacketProcessHandler) extends SimpleChannel
     def processReceivedPackets() :Unit ={
         flushOutboundQueue()
 
-
-
-
-
-        //        packetListener match {
-        //            case tickable: ITickable => tickable.update()
-        //            case _ =>
-        //        }
-
-
-
         channel.flush
     }
 
@@ -162,8 +150,6 @@ class NetworkManager(packetProcess: IPacketProcessHandler) extends SimpleChannel
         if (channel != null && !channel.isOpen) if (disconnected) log.warn("handleDisconnection() called twice")
         else {
             disconnected = true
-            //  if (getExitMessage != null) getNetHandler.onDisconnect(getExitMessage)
-            // else
             if (packetListener != null) packetListener.disconnect("Disconnected")
         }
     }

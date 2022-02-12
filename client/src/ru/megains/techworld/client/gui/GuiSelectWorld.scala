@@ -2,12 +2,13 @@ package ru.megains.techworld.client.gui
 
 import org.lwjgl.glfw.GLFW._
 import ru.megains.techworld.client.gui.element.MButton
+import ru.megains.techworld.client.renderer.text.Label
 
 import scala.collection.mutable.ArrayBuffer
 
 class GuiSelectWorld(previousScreen: GuiScreen) extends GuiScreen {
 
-   //  val sceneGui: SceneGui = orangeM.scene.asInstanceOf[SceneGui]
+    val name = new Label("SelectWorld")
     var selectWorld: GuiSlotWorld = _
     var savesArray: Array[String] = _
     var slotWorlds: ArrayBuffer[GuiSlotWorld] = new ArrayBuffer[GuiSlotWorld]
@@ -44,12 +45,13 @@ class GuiSelectWorld(previousScreen: GuiScreen) extends GuiScreen {
 //
 //            addChildren(slotWorlds(i))
 //        }
-        addChildren(buttonSelect, buttonDelete, buttonCreateWorld, buttonCancel)
+        addChildren(name, buttonSelect, buttonDelete, buttonCreateWorld, buttonCancel)
     }
 
 
     override def resize(width: Int, height: Int): Unit = {
-
+        name.posX = (width - name.width) / 2
+        name.posY = 50
         buttonSelect.posX = width / 2 - 350
         buttonSelect.posY = height - 150
 

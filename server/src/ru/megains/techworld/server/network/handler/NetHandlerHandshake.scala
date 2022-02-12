@@ -26,7 +26,7 @@ class NetHandlerHandshake(server: TWServer, networkManager: NetworkManager) exte
                     networkManager.closeChannel(text)
                 }
                 else{
-                    //networkManager.setNetHandler(new NetHandlerLoginServer(server, networkManager))
+                    networkManager.setNetHandler(new NetHandlerLoginServer(server, networkManager))
                 }
 
             case STATUS =>

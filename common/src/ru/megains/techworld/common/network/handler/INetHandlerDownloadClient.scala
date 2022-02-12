@@ -1,5 +1,11 @@
 package ru.megains.techworld.common.network.handler
 
-//trait INetHandlerDownloadClient extends INetHandler {
-//
-//}
+import ru.megains.techworld.common.network.packet.download.server.SPacketDownloadSuccess
+import ru.megains.techworld.common.network.packet.login.server.SPacketLoginSuccess
+
+trait INetHandlerDownloadClient extends INetHandler {
+
+    def handleDownloadSuccess(packetIn: SPacketDownloadSuccess): Unit
+
+
+}

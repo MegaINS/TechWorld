@@ -3,7 +3,11 @@ package ru.megains.techworld.common.network
 import io.netty.util.AttributeKey
 import ru.megains.techworld.common.network.ConnectionState.HANDSHAKING.registerPacket
 import ru.megains.techworld.common.network.packet.Packet
+import ru.megains.techworld.common.network.packet.download.client.CPacketDownloadStart
+import ru.megains.techworld.common.network.packet.download.server.SPacketDownloadSuccess
 import ru.megains.techworld.common.network.packet.handshake.client.CHandshake
+import ru.megains.techworld.common.network.packet.login.client.CPacketLoginStart
+import ru.megains.techworld.common.network.packet.login.server.SPacketLoginSuccess
 import ru.megains.techworld.common.network.packet.status.client.{CPacketPing, CPacketServerQuery}
 import ru.megains.techworld.common.network.packet.status.server.{SPacketPong, SPacketServerInfo}
 
@@ -63,29 +67,27 @@ object ConnectionState {
     }
 
     case object LOGIN extends ConnectionState("LOGIN", 2) {
+        registerPacket(classOf[CPacketLoginStart])
 
+        registerPacket(classOf[SPacketLoginSuccess])
     }
 
     case object DOWNLOAD extends ConnectionState("DOWNLOAD",3){
+        registerPacket(classOf[CPacketDownloadStart])
+
+        registerPacket(classOf[SPacketDownloadSuccess])
+    }
+
+    case object PLAY extends ConnectionState("PLAY",4){
 
     }
 
-    case object CREATION_DOWNLOAD extends ConnectionState("CREATION_DOWNLOAD",4){
-
-    }
-
-    case object PLAY extends ConnectionState("PLAY", 5) {
-
-
-
-    }
 
     val STATES_BY_ID: Array[ConnectionState] = Array(HANDSHAKING, STATUS, LOGIN, PLAY)
     addClass(HANDSHAKING)
     addClass(STATUS)
     addClass(LOGIN)
     addClass(DOWNLOAD)
-    addClass(CREATION_DOWNLOAD)
     addClass(PLAY)
 
     def addClass(state: ConnectionState): Unit = {

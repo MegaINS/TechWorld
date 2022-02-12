@@ -4,12 +4,15 @@ import org.lwjgl.stb.STBImage.stbi_set_flip_vertically_on_load
 import ru.megains.techworld.client.gui.{GuiManager, GuiPlayerSelect, GuiScreen}
 import ru.megains.techworld.client.renderer.shader.ShaderManager
 import ru.megains.techworld.client.renderer.{Mouse, Window}
-import ru.megains.techworld.common.network.PacketProcessHandler
+import ru.megains.techworld.common.network.{NetworkManager, PacketProcessHandler}
 import ru.megains.techworld.common.utils.{Logger, Timer}
 
 
 class TechWorld(config: Configuration) extends Logger{
 
+
+
+    var networkManager:NetworkManager = _
 
     var playerName = ""
     val gameSettings:GameSettings = new GameSettings(this,config.filePath)
