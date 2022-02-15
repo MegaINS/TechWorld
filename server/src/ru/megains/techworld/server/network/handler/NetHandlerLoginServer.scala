@@ -3,9 +3,11 @@ package ru.megains.techworld.server.network.handler
 import ru.megains.techworld.common.network.ConnectionState.{DOWNLOAD, STATUS}
 import ru.megains.techworld.common.network.NetworkManager
 import ru.megains.techworld.common.network.handler.{INetHandlerDownloadServer, INetHandlerLoginServer}
+import ru.megains.techworld.common.network.packet.download.server.SPacketDownloadStart
 import ru.megains.techworld.common.network.packet.login.client.CPacketLoginStart
 import ru.megains.techworld.common.network.packet.login.server.SPacketLoginSuccess
 import ru.megains.techworld.server.TWServer
+import ru.megains.techworld.server.entity.EntityPlayerS
 
 class NetHandlerLoginServer(server: TWServer, networkManager: NetworkManager) extends INetHandlerLoginServer /*with ITickable*/ {
 
@@ -23,7 +25,7 @@ class NetHandlerLoginServer(server: TWServer, networkManager: NetworkManager) ex
 
     def update(): Unit = {
         if (currentLoginState == LoginState.READY_TO_ACCEPT) tryAcceptPlayer()
-
+       // if (currentLoginState == LoginState.ACCEPTED) startDownload()
         //        if ( {
         //            connectionTimer += 1; connectionTimer - 1
         //        } == 600) closeConnection("Took too long to log in")
@@ -36,14 +38,17 @@ class NetHandlerLoginServer(server: TWServer, networkManager: NetworkManager) ex
         currentLoginState = LoginState.ACCEPTED
 
         networkManager.sendPacket(new SPacketLoginSuccess())
-        networkManager.setNetHandler(new NetHandlerDownloadServer(server, networkManager))
-       // var entityPlayer: EntityPlayerMP = server.playerList.getPlayerByName(name)
-       // if (entityPlayer == null) {
-       //     entityPlayer = server.playerList.createPlayerForUser(name)
-       // }
-       // server.playerList.initializeConnectionToPlayer(networkManager, entityPlayer)
-        // }
+
+        var entityPlayer: EntityPlayerS = server.playerList.getPlayerByName(name)
+        if (entityPlayer == null) {
+            entityPlayer = server.playerList.createPlayerForUser(name)
+        }
+
+        networkManager.setNetHandler(new NetHandlerDownloadServer(server, networkManager,entityPlayer))
+        networkManager.sendPacket(new SPacketDownloadStart())
     }
+
+
 
     object LoginState extends Enumeration {
         type LoginState = Value

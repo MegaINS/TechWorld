@@ -1,9 +1,9 @@
-package ru.megains.techworld.common.network.packet.download.client
+package ru.megains.techworld.common.network.packet.download.server
 
-import ru.megains.techworld.common.network.handler.{INetHandlerDownloadServer, INetHandlerLoginServer}
+import ru.megains.techworld.common.network.handler.{INetHandlerDownloadClient, INetHandlerDownloadServer}
 import ru.megains.techworld.common.network.packet.{Packet, PacketBuffer}
 
-class CPacketDownloadStart extends Packet[INetHandlerDownloadServer] {
+class SPacketDownloadStart extends Packet[INetHandlerDownloadClient] {
 
 
 
@@ -21,7 +21,7 @@ class CPacketDownloadStart extends Packet[INetHandlerDownloadServer] {
 
     }
 
-    override def processPacket(handler: INetHandlerDownloadServer): Unit = {
+    override def processPacket(handler: INetHandlerDownloadClient): Unit = {
         handler.processDownloadStart(this)
     }
 }

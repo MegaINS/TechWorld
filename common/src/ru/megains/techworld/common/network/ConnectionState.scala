@@ -1,13 +1,15 @@
 package ru.megains.techworld.common.network
 
 import io.netty.util.AttributeKey
+import ru.megains.techworld.common.network.ConnectionState.DOWNLOAD.registerPacket
 import ru.megains.techworld.common.network.ConnectionState.HANDSHAKING.registerPacket
 import ru.megains.techworld.common.network.packet.Packet
-import ru.megains.techworld.common.network.packet.download.client.CPacketDownloadStart
-import ru.megains.techworld.common.network.packet.download.server.SPacketDownloadSuccess
+import ru.megains.techworld.common.network.packet.download.client.CPacketDownloadFinish
+import ru.megains.techworld.common.network.packet.download.server.{SPacketDownloadStart, SPacketDownloadSuccess}
 import ru.megains.techworld.common.network.packet.handshake.client.CHandshake
 import ru.megains.techworld.common.network.packet.login.client.CPacketLoginStart
 import ru.megains.techworld.common.network.packet.login.server.SPacketLoginSuccess
+import ru.megains.techworld.common.network.packet.play.server.{SPacketJoinGame, SPacketPlayerPosLook}
 import ru.megains.techworld.common.network.packet.status.client.{CPacketPing, CPacketServerQuery}
 import ru.megains.techworld.common.network.packet.status.server.{SPacketPong, SPacketServerInfo}
 
@@ -73,13 +75,16 @@ object ConnectionState {
     }
 
     case object DOWNLOAD extends ConnectionState("DOWNLOAD",3){
-        registerPacket(classOf[CPacketDownloadStart])
 
+        registerPacket(classOf[CPacketDownloadFinish])
+
+        registerPacket(classOf[SPacketDownloadStart])
         registerPacket(classOf[SPacketDownloadSuccess])
     }
 
     case object PLAY extends ConnectionState("PLAY",4){
-
+        registerPacket(classOf[SPacketJoinGame])
+        registerPacket(classOf[SPacketPlayerPosLook])
     }
 
 

@@ -13,7 +13,7 @@ class TWServer(directory:Path) extends Logger{
     val statusResponse: ServerStatusResponse = new ServerStatusResponse
     val packetProcessHandler:PacketProcessHandler = new PacketProcessHandler
     var timeOfLastWarning = 0L
-
+    val playerList:PlayerList = new PlayerList
     def start(): Boolean = {
         log.info("Starting TechWorld server  version 0.0.1")
 

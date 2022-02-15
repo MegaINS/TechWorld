@@ -1,5 +1,6 @@
 package ru.megains.techworld.client.gui
 
+import ru.megains.techworld.client.TechWorld
 import ru.megains.techworld.client.gui.element.MButton
 import ru.megains.techworld.client.network.handler.NetHandlerLoginClient
 import ru.megains.techworld.client.network.{NetworkManagerClient, ServerAddress, ServerData}
@@ -48,7 +49,7 @@ class GuiConnecting(previousScreen: GuiScreen, serverDataIn: ServerData) extends
 
                     inetaddress = InetAddress.getByName(ip)
                     networkManager = NetworkManagerClient.createNetworkManagerAndConnect(inetaddress, port, game.packetProcessHandler)
-                    networkManager.setNetHandler(new NetHandlerLoginClient(networkManager, previousScreen))
+                    networkManager.setNetHandler(new NetHandlerLoginClient(game,networkManager, previousScreen))
                     networkManager.sendPacket(new CHandshake(210, ip, port, ConnectionState.LOGIN))
                     networkManager.sendPacket(new CPacketLoginStart(game.playerName))
                     game.networkManager = networkManager

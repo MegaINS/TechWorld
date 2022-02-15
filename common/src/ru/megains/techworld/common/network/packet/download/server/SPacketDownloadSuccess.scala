@@ -1,6 +1,6 @@
 package ru.megains.techworld.common.network.packet.download.server
 
-import ru.megains.techworld.common.network.handler.{INetHandlerDownloadClient, INetHandlerLoginClient}
+import ru.megains.techworld.common.network.handler.{INetHandlerDownloadClient, INetHandlerDownloadServer, INetHandlerLoginClient}
 import ru.megains.techworld.common.network.packet.{Packet, PacketBuffer}
 
 class SPacketDownloadSuccess extends Packet[INetHandlerDownloadClient] {

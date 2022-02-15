@@ -3,7 +3,8 @@ package ru.megains.techworld.client
 import org.lwjgl.stb.STBImage.stbi_set_flip_vertically_on_load
 import ru.megains.techworld.client.gui.{GuiManager, GuiPlayerSelect, GuiScreen}
 import ru.megains.techworld.client.renderer.shader.ShaderManager
-import ru.megains.techworld.client.renderer.{Mouse, Window}
+import ru.megains.techworld.client.renderer.{Mouse, RendererGame, RendererWorld, Window}
+import ru.megains.techworld.client.world.WorldClient
 import ru.megains.techworld.common.network.{NetworkManager, PacketProcessHandler}
 import ru.megains.techworld.common.utils.{Logger, Timer}
 
@@ -12,7 +13,7 @@ class TechWorld(config: Configuration) extends Logger{
 
 
 
-    var networkManager:NetworkManager = _
+
 
     var playerName = ""
     val gameSettings:GameSettings = new GameSettings(this,config.filePath)
@@ -23,6 +24,11 @@ class TechWorld(config: Configuration) extends Logger{
     val guiManager = new GuiManager(this)
     val packetProcessHandler:PacketProcessHandler = new PacketProcessHandler
 
+
+    var world:WorldClient = _
+    val rendererGame:RendererGame = new RendererGame
+    var networkManager:NetworkManager = _
+    var playerController:PlayerController = _
 
     def start(): Unit = {
         if (init()) {
@@ -52,16 +58,17 @@ class TechWorld(config: Configuration) extends Logger{
     }
 
     def render(): Unit = {
-
-
         guiManager.render()
         window.update()
         Mouse.update()
+
+        if(world!= null) rendererGame.render()
     }
 
     def update(): Unit = {
         packetProcessHandler.tick()
         guiManager.update()
+        if(world!= null) rendererGame.update()
     }
 
     def gameLoop(): Unit = {
@@ -86,23 +93,33 @@ class TechWorld(config: Configuration) extends Logger{
         }
     }
 
-    def runTickMouse(button: Int, action: Int, mods: Int): Unit = {
-        if (guiManager.isGuiOpen) {
-            guiManager.runTickMouse(button, action, mods)
-        } else {
 
-        }
-
-
-    }
 
     def setScreen(value: GuiScreen): Unit = {
         guiManager.setScreen(value)
     }
 
-    def runTickKeyboard(key: Int, action: Int, mods: Int): Unit = {
+    def setWorld(newWorld: WorldClient): Unit = {
+        world = newWorld
+        rendererGame.setWorld(world)
+    }
 
-        println(s"$key $action $mods")
+
+
+    def runTickMouse(button: Int, action: Int, mods: Int): Unit = {
+        if (guiManager.isGuiOpen) {
+            guiManager.runTickMouse(button: Int, action, mods)
+        } else {
+            playerController.runTickMouse(button: Int, action, mods)
+        }
+    }
+
+    def runTickKeyboard(key: Int, action: Int, mods: Int): Unit = {
+        if (guiManager.isGuiOpen) {
+           // guiManager.runTickKeyboard(key: Int, action: Int, mods: Int)
+        } else {
+            playerController.runTickKeyboard(key: Int, action: Int, mods: Int)
+        }
     }
 
 

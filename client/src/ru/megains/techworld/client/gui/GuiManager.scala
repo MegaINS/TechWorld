@@ -24,7 +24,7 @@ class GuiManager(game: TechWorld) {
     }
 
     def setScreen(screen: GuiScreen): Unit = {
-        screen.setGame(game)
+        if(screen!=null) screen.setGame(game)
         guiScreen = screen
     }
 

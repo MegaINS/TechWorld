@@ -92,12 +92,12 @@ class NetworkManager(packetProcess: IPacketProcessHandler) extends SimpleChannel
             channel.config.setAutoRead(false)
         }
         if (channel.eventLoop.inEventLoop && isChannelOpen) {
-            if (enumconnectionstate != enumconnectionstate1) this.setConnectionState(enumconnectionstate)
+            if (enumconnectionstate != enumconnectionstate1) setConnectionState(enumconnectionstate)
+            println("1111111111111111")
             val channelfuture: ChannelFuture = this.channel.writeAndFlush(inPacket)
             channelfuture.addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE)
         }
         else {
-
             channel.eventLoop.execute(new Runnable() {
                 def run() :Unit ={
                     if (enumconnectionstate != enumconnectionstate1) setConnectionState(enumconnectionstate)

@@ -30,8 +30,8 @@ class ServerCommand(server: TWServer) extends Thread {
             commands.keySet.filter(_ != "").toIndexedSeq.sorted.foreach(println)
         })
         commands += "players" -> ((_: Array[String]) => {
-          //  println("Players online: " + server.playerList.nameToPlayerMap.size)
-           // server.playerList.nameToPlayerMap.keySet.foreach(println)
+            println("Players online: " + server.playerList.nameToPlayerMap.size)
+            server.playerList.nameToPlayerMap.keySet.foreach(println)
         })
        // commands += "save" -> ((_: Array[String]) => server.saveAllWorlds(false))
         commands += "gt" -> ((command: Array[String]) => {
