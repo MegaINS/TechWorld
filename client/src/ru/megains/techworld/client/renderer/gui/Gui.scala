@@ -1,4 +1,4 @@
-package ru.megains.techworld.client.gui
+package ru.megains.techworld.client.renderer.gui
 
 import ru.megains.techworld.client.TechWorld
 import ru.megains.techworld.client.renderer.MContainer

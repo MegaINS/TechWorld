@@ -1,11 +1,12 @@
-package ru.megains.techworld.client.gui
+package ru.megains.techworld.client.renderer.gui
 
 import org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE
-import ru.megains.techworld.client.gui.element.MButton
+import ru.megains.techworld.client.renderer.gui.element.MButton
 
 class GuiInGameMenu() extends GuiScreen {
 
     val buttonMainMenu: MButton = new MButton("Main menu", 300, 40, _ => {
+        game.setWorld(null)
         game.setScreen(new GuiMainMenu())
     })
     val buttonOption: MButton = new MButton("Option", 300, 40, _ => {

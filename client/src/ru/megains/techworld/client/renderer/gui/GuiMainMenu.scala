@@ -1,6 +1,6 @@
-package ru.megains.techworld.client.gui
+package ru.megains.techworld.client.renderer.gui
 
-import ru.megains.techworld.client.gui.element.MButton
+import ru.megains.techworld.client.renderer.gui.element.MButton
 
 class GuiMainMenu() extends GuiScreen {
 

@@ -1,4 +1,4 @@
-package ru.megains.techworld.client.gui
+package ru.megains.techworld.client.renderer.gui
 
 import org.lwjgl.glfw.GLFW.{GLFW_PRESS, GLFW_RELEASE}
 import org.lwjgl.opengl.GL11.{GL_BLEND, GL_CULL_FACE, GL_DEPTH_TEST, GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA, GL_STENCIL_TEST, glBlendFunc, glDisable, glEnable}

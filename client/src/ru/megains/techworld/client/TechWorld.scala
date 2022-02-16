@@ -1,7 +1,8 @@
 package ru.megains.techworld.client
 
 import org.lwjgl.stb.STBImage.stbi_set_flip_vertically_on_load
-import ru.megains.techworld.client.gui.{GuiManager, GuiPlayerSelect, GuiScreen}
+import ru.megains.techworld.client.entity.EntityPlayerC
+import ru.megains.techworld.client.renderer.gui.{GuiManager, GuiPlayerSelect, GuiScreen}
 import ru.megains.techworld.client.renderer.shader.ShaderManager
 import ru.megains.techworld.client.renderer.{Mouse, RendererGame, RendererWorld, Window}
 import ru.megains.techworld.client.world.WorldClient
@@ -16,7 +17,7 @@ class TechWorld(config: Configuration) extends Logger{
 
 
     var playerName = ""
-    val gameSettings:GameSettings = new GameSettings(this,config.filePath)
+    val settings:GameSettings = new GameSettings(this,config.filePath)
     val window: Window = new Window(config.width, config.height, config.title)
     var running: Boolean = true
     val timerFps = new Timer(60)
@@ -26,9 +27,11 @@ class TechWorld(config: Configuration) extends Logger{
 
 
     var world:WorldClient = _
-    val rendererGame:RendererGame = new RendererGame
+    val rendererGame:RendererGame = new RendererGame(this)
     var networkManager:NetworkManager = _
     var playerController:PlayerController = _
+    var player:EntityPlayerC = _
+
 
     def start(): Unit = {
         if (init()) {
@@ -51,6 +54,8 @@ class TechWorld(config: Configuration) extends Logger{
         stbi_set_flip_vertically_on_load(true)
         log.info("Init GuiManager")
         guiManager.init()
+        log.info("Init RendererGame")
+        rendererGame.init()
 
         log.info("Start Game")
         guiManager.setScreen(new GuiPlayerSelect)
@@ -101,6 +106,16 @@ class TechWorld(config: Configuration) extends Logger{
 
     def setWorld(newWorld: WorldClient): Unit = {
         world = newWorld
+
+        if(newWorld!= null){
+            if(player == null){
+                player = playerController.createClientPlayer(world)
+            }
+        }else{
+            player = null
+        }
+
+
         rendererGame.setWorld(world)
     }
 

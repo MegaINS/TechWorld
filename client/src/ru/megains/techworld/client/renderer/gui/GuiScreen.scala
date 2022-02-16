@@ -1,4 +1,4 @@
-package ru.megains.techworld.client.gui
+package ru.megains.techworld.client.renderer.gui
 
 abstract class GuiScreen extends Gui{
 

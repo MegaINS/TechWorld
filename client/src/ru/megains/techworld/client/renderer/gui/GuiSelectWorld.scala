@@ -1,7 +1,7 @@
-package ru.megains.techworld.client.gui
+package ru.megains.techworld.client.renderer.gui
 
 import org.lwjgl.glfw.GLFW._
-import ru.megains.techworld.client.gui.element.MButton
+import ru.megains.techworld.client.renderer.gui.element.MButton
 import ru.megains.techworld.client.renderer.text.Label
 
 import scala.collection.mutable.ArrayBuffer

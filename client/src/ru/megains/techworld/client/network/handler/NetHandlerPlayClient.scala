@@ -1,7 +1,7 @@
 package ru.megains.techworld.client.network.handler
 
 import ru.megains.techworld.client.{PlayerController, TechWorld}
-import ru.megains.techworld.client.gui.{GuiDownloadTerrain, GuiScreen}
+import ru.megains.techworld.client.renderer.gui.{GuiDownloadTerrain, GuiScreen}
 import ru.megains.techworld.client.world.WorldClient
 import ru.megains.techworld.common.network.NetworkManager
 import ru.megains.techworld.common.network.handler.{INetHandler, INetHandlerPlayClient}
@@ -22,16 +22,17 @@ class NetHandlerPlayClient(game: TechWorld, previousScene: GuiScreen, val netMan
 
     override def handleJoinGame(packetIn: SPacketJoinGame): Unit = {
 
-        game.setScreen(new GuiDownloadTerrain(game: TechWorld,this))
+        game.setScreen(new GuiDownloadTerrain(game: TechWorld, this))
+        game.playerController = new PlayerController(game, this)
         clientWorld = new WorldClient()
         game.setWorld(clientWorld)
 
-//        gameScene = new SceneGame(gameController)
-//        gameController.setScene(gameScene)
-//
-         game.playerController = new PlayerController(game, this)
-//
-//        clientWorldController = new WorldClient()
+        //        gameScene = new SceneGame(gameController)
+        //        gameController.setScene(gameScene)
+        //
+
+        //
+        //        clientWorldController = new WorldClient()
 
 
         //        gameController.loadWorld(clientWorldController)
@@ -57,46 +58,46 @@ class NetHandlerPlayClient(game: TechWorld, previousScene: GuiScreen, val netMan
 
     }
 
-        override def handlePlayerPosLook(packetIn: SPacketPlayerPosLook): Unit = {
+    override def handlePlayerPosLook(packetIn: SPacketPlayerPosLook): Unit = {
+        val player = game.player
 
 
-
-            game.setScreen(null)
-    //       // val entityplayer: EntityPlayer = gameController.player
-    //        var d0: Float = packetIn.x
-    //        var d1: Float = packetIn.y
-    //        var d2: Float = packetIn.z
-    //        var f: Float = packetIn.yaw
-    //        var f1: Float = packetIn.pitch
-    //        if (packetIn.flags.contains(SPacketPlayerPosLook.EnumFlags.X)) d0 += entityplayer.posX
-    //        else entityplayer.motionX = 0.0f
-    //        if (packetIn.flags.contains(SPacketPlayerPosLook.EnumFlags.Y)) d1 += entityplayer.posY
-    //        else entityplayer.motionY = 0.0f
-    //        if (packetIn.flags.contains(SPacketPlayerPosLook.EnumFlags.Z)) d2 += entityplayer.posZ
-    //        else entityplayer.motionZ = 0.0f
-    //        if (packetIn.flags.contains(SPacketPlayerPosLook.EnumFlags.X_ROT)) f1 += entityplayer.rotationPitch
-    //        if (packetIn.flags.contains(SPacketPlayerPosLook.EnumFlags.Y_ROT)) f += entityplayer.rotationYaw
-    //      //  entityplayer.setPositionAndRotation(d0, d1, d2, f, f1)
-    //        // netManager.sendPacket(new CPacketConfirmTeleport(packetIn.getTeleportId))
-    //
-    //        netManager.sendPacket(new CPacketPlayer.PositionRotation(entityplayer.posX, entityplayer.body.minY, entityplayer.posZ, entityplayer.rotationYaw, entityplayer.rotationPitch, false))
-    //        if (!doneLoadingTerrain) {
-    //            gameController.player.prevPosX = gameController.player.posX
-    //            gameController.player.prevPosY = gameController.player.posY
-    //            gameController.player.prevPosZ = gameController.player.posZ
-    //            doneLoadingTerrain = true
-    //            gameController.guiManager.setGuiScreen(null)
-    //        }
-        }
+        game.setScreen(null)
+        //       // val entityplayer: EntityPlayer = gameController.player
+        //        var d0: Float = packetIn.x
+        //        var d1: Float = packetIn.y
+        //        var d2: Float = packetIn.z
+        //        var f: Float = packetIn.yaw
+        //        var f1: Float = packetIn.pitch
+        //        if (packetIn.flags.contains(SPacketPlayerPosLook.EnumFlags.X)) d0 += entityplayer.posX
+        //        else entityplayer.motionX = 0.0f
+        //        if (packetIn.flags.contains(SPacketPlayerPosLook.EnumFlags.Y)) d1 += entityplayer.posY
+        //        else entityplayer.motionY = 0.0f
+        //        if (packetIn.flags.contains(SPacketPlayerPosLook.EnumFlags.Z)) d2 += entityplayer.posZ
+        //        else entityplayer.motionZ = 0.0f
+        //        if (packetIn.flags.contains(SPacketPlayerPosLook.EnumFlags.X_ROT)) f1 += entityplayer.rotationPitch
+        //        if (packetIn.flags.contains(SPacketPlayerPosLook.EnumFlags.Y_ROT)) f += entityplayer.rotationYaw
+          player.setPositionAndRotation(packetIn.x, packetIn.y, packetIn.z, packetIn.yaw, packetIn.pitch)
+        //        // netManager.sendPacket(new CPacketConfirmTeleport(packetIn.getTeleportId))
+        //
+        //        netManager.sendPacket(new CPacketPlayer.PositionRotation(entityplayer.posX, entityplayer.body.minY, entityplayer.posZ, entityplayer.rotationYaw, entityplayer.rotationPitch, false))
+        //        if (!doneLoadingTerrain) {
+        //            gameController.player.prevPosX = gameController.player.posX
+        //            gameController.player.prevPosY = gameController.player.posY
+        //            gameController.player.prevPosZ = gameController.player.posZ
+        //            doneLoadingTerrain = true
+        //            gameController.guiManager.setGuiScreen(null)
+        //        }
+    }
 
     override def disconnect(msg: String): Unit = {
 
     }
 
 
-//    def handleHeldItemChange(packetIn: SPacketHeldItemChange): Unit = {
-//        // if (InventoryPlayer.isHotBar(packetIn.heldItemHotbarIndex)) this.gameController.player.inventory.stackSelect = packetIn.heldItemHotbarIndex
-//    }
+    //    def handleHeldItemChange(packetIn: SPacketHeldItemChange): Unit = {
+    //        // if (InventoryPlayer.isHotBar(packetIn.heldItemHotbarIndex)) this.gameController.player.inventory.stackSelect = packetIn.heldItemHotbarIndex
+    //    }
 
     //
     //    def handleChunkData(packetIn: SPacketChunkData): Unit = {

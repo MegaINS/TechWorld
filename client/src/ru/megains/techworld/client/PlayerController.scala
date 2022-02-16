@@ -1,9 +1,11 @@
 package ru.megains.techworld.client
 
 import org.lwjgl.glfw.GLFW._
-import ru.megains.techworld.client.gui.GuiInGameMenu
+import ru.megains.techworld.client.entity.EntityPlayerC
 import ru.megains.techworld.client.network.handler.NetHandlerPlayClient
 import ru.megains.techworld.client.renderer.Mouse
+import ru.megains.techworld.client.renderer.gui.GuiInGameMenu
+import ru.megains.techworld.common.world.World
 
 import scala.util.Random
 
@@ -11,11 +13,11 @@ class PlayerController(game: TechWorld, netHandler:NetHandlerPlayClient) {
 
     val gui = new GuiInGameMenu()
 
-//    def createClientPlayer(world: World): EntityPlayer = {
-//       val player = new EntityPlayer(gameScene.game.playerName)
-//        player.setWorld(world)
-//        player
-//    }
+    def createClientPlayer(world: World): EntityPlayerC = {
+        val player = new EntityPlayerC(/*game.playerName*/)
+       // player.setWorld(world)
+        player
+    }
 
     def runTickKeyboard(key: Int, action: Int, mods: Int): Unit ={
         if (action == GLFW_PRESS) {

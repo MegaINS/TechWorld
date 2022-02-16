@@ -1,8 +1,8 @@
 package ru.megains.techworld.client.network.handler
 
 import ru.megains.techworld.client.TechWorld
-import ru.megains.techworld.client.gui.GuiScreen
 import ru.megains.techworld.client.renderer.MContainer
+import ru.megains.techworld.client.renderer.gui.GuiScreen
 import ru.megains.techworld.common.network.{ConnectionState, NetworkManager}
 import ru.megains.techworld.common.network.handler.INetHandlerDownloadClient
 import ru.megains.techworld.common.network.packet.download.client.CPacketDownloadFinish

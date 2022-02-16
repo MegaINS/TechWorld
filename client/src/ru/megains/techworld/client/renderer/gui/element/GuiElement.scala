@@ -1,6 +1,6 @@
-package ru.megains.techworld.client.gui.element
+package ru.megains.techworld.client.renderer.gui.element
 
-import ru.megains.techworld.client.gui.Gui
+import ru.megains.techworld.client.renderer.gui.Gui
 
 abstract class GuiElement() extends Gui {
 

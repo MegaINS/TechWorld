@@ -1,7 +1,7 @@
-package ru.megains.techworld.client.gui
+package ru.megains.techworld.client.renderer.gui
 
-import ru.megains.techworld.client.gui.element.GuiElement
 import ru.megains.techworld.client.network.{ServerData, ServerPinger}
+import ru.megains.techworld.client.renderer.gui.element.GuiElement
 import ru.megains.techworld.client.renderer.model.Model
 import ru.megains.techworld.client.renderer.text.Label
 

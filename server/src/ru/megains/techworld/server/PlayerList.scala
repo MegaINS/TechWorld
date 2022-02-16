@@ -25,9 +25,9 @@ class PlayerList {
         nameToPlayerMap.get(name).orNull
     }
 
-    def initializeConnectionToPlayer(networkManager: NetworkManager, entityPlayer: EntityPlayerS): Unit = {
+    def initializeConnectionToPlayer(networkManager: NetworkManager, player: EntityPlayerS): Unit = {
         networkManager.sendPacket(new SPacketJoinGame())
-        networkManager.sendPacket(new SPacketPlayerPosLook())
+        networkManager.sendPacket(new SPacketPlayerPosLook(player.posX,player.posY,player.posZ,player.rotYaw,player.rotPitch))
     }
 
 

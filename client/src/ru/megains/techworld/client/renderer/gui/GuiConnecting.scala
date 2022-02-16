@@ -1,9 +1,9 @@
-package ru.megains.techworld.client.gui
+package ru.megains.techworld.client.renderer.gui
 
 import ru.megains.techworld.client.TechWorld
-import ru.megains.techworld.client.gui.element.MButton
 import ru.megains.techworld.client.network.handler.NetHandlerLoginClient
 import ru.megains.techworld.client.network.{NetworkManagerClient, ServerAddress, ServerData}
+import ru.megains.techworld.client.renderer.gui.element.MButton
 import ru.megains.techworld.client.renderer.text.Label
 import ru.megains.techworld.common.network.{ConnectionState, NetworkManager}
 import ru.megains.techworld.common.network.packet.handshake.client.CHandshake

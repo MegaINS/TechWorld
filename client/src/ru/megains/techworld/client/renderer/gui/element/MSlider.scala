@@ -1,4 +1,4 @@
-package ru.megains.techworld.client.gui.element
+package ru.megains.techworld.client.renderer.gui.element
 
 import ru.megains.techworld.client.renderer.{MContainer, MSprite, Resources}
 import ru.megains.techworld.client.renderer.text.Label
