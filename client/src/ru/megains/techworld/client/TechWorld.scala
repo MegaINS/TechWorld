@@ -1,5 +1,7 @@
 package ru.megains.techworld.client
 
+import org.joml.Vector3i
+import org.lwjgl.glfw.GLFW.{GLFW_KEY_M, _}
 import org.lwjgl.stb.STBImage.stbi_set_flip_vertically_on_load
 import ru.megains.techworld.client.entity.EntityPlayerC
 import ru.megains.techworld.client.renderer.gui.{GuiManager, GuiPlayerSelect, GuiScreen}
@@ -25,7 +27,7 @@ class TechWorld(config: Configuration) extends Logger{
     val guiManager = new GuiManager(this)
     val packetProcessHandler:PacketProcessHandler = new PacketProcessHandler
 
-
+    val moved = new Vector3i(0, 0, 0)
     var world:WorldClient = _
     val rendererGame:RendererGame = new RendererGame(this)
     var networkManager:NetworkManager = _
@@ -72,8 +74,38 @@ class TechWorld(config: Configuration) extends Logger{
 
     def update(): Unit = {
         packetProcessHandler.tick()
+
+
+
+        if(world!= null){
+            world.update()
+            if(!guiManager.isGuiOpen){
+                moved.zero()
+                if (glfwGetKey(window.id, GLFW_KEY_W) == GLFW_PRESS) moved.add(0, 0, 1)
+                if (glfwGetKey(window.id, GLFW_KEY_S) == GLFW_PRESS) moved.add(0, 0, -1)
+                if (glfwGetKey(window.id, GLFW_KEY_A) == GLFW_PRESS) moved.add(-1, 0, 0)
+                if (glfwGetKey(window.id, GLFW_KEY_D) == GLFW_PRESS) moved.add(1, 0, 0)
+                if (glfwGetKey(window.id, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) moved.add(0, -1, 0)
+                if (glfwGetKey(window.id, GLFW_KEY_SPACE) == GLFW_PRESS) moved.add(0, 1, 0)
+
+                //  player.inventory.changeStackSelect(Mouse.getDWheel * -1)
+
+                player.moveForward = moved.z
+                player.moveStrafing = moved.x
+                player.isJumping = moved.y == 1
+
+                player.turn(Mouse.getDX.toFloat,-Mouse.getDY.toFloat)
+                player.update(moved.y)
+            }
+
+
+
+            rendererGame.update()
+        }
+
+
         guiManager.update()
-        if(world!= null) rendererGame.update()
+
     }
 
     def gameLoop(): Unit = {
@@ -100,8 +132,13 @@ class TechWorld(config: Configuration) extends Logger{
 
 
 
-    def setScreen(value: GuiScreen): Unit = {
-        guiManager.setScreen(value)
+    def setScreen(screen: GuiScreen): Unit = {
+        guiManager.setScreen(screen)
+        if(screen!=null){
+            Mouse.setGrabbed(false)
+        }else{
+            Mouse.setGrabbed(true)
+        }
     }
 
     def setWorld(newWorld: WorldClient): Unit = {

@@ -5,11 +5,22 @@ import ru.megains.techworld.common.physics.BoundingBox
 abstract class Entity(wight:Float,height:Float) {
 
 
+    var motionX: Float = 0.0F
+    var motionY: Float = 0.0F
+    var motionZ: Float = 0.0F
+
     var posX: Float = 0.0F
     var posY: Float = 0.0F
     var posZ: Float = 0.0F
     var rotYaw: Float = 0
     var rotPitch: Float = 0
+
+
+    var isJumping: Boolean = false
+    var moveStrafing: Int = 0
+    var moveForward: Int = 0
+
+
     val body: BoundingBox = new BoundingBox(-wight/2,0,-wight/2,wight/2,height,wight/2)
 
     def setPositionAndRotation(x: Float, y: Float, z: Float, yaw: Float, pitch: Float): Unit = {
