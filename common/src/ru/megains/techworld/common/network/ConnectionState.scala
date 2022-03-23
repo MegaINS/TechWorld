@@ -9,7 +9,8 @@ import ru.megains.techworld.common.network.packet.download.server.{SPacketDownlo
 import ru.megains.techworld.common.network.packet.handshake.client.CHandshake
 import ru.megains.techworld.common.network.packet.login.client.CPacketLoginStart
 import ru.megains.techworld.common.network.packet.login.server.SPacketLoginSuccess
-import ru.megains.techworld.common.network.packet.play.server.{SPacketJoinGame, SPacketPlayerPosLook}
+import ru.megains.techworld.common.network.packet.play.client.CPacketPlayer
+import ru.megains.techworld.common.network.packet.play.server.{SPacketChunkData, SPacketJoinGame, SPacketPlayerPosLook, SPacketSpawnPlayer, SPacketUnloadChunk}
 import ru.megains.techworld.common.network.packet.status.client.{CPacketPing, CPacketServerQuery}
 import ru.megains.techworld.common.network.packet.status.server.{SPacketPong, SPacketServerInfo}
 
@@ -85,6 +86,14 @@ object ConnectionState {
     case object PLAY extends ConnectionState("PLAY",4){
         registerPacket(classOf[SPacketJoinGame])
         registerPacket(classOf[SPacketPlayerPosLook])
+        registerPacket(classOf[SPacketChunkData])
+        registerPacket(classOf[SPacketUnloadChunk])
+        registerPacket(classOf[SPacketSpawnPlayer])
+
+        registerPacket( classOf[CPacketPlayer])
+        registerPacket( classOf[CPacketPlayer.Position])
+        registerPacket( classOf[CPacketPlayer.Rotation])
+        registerPacket( classOf[CPacketPlayer.PositionRotation])
     }
 
 

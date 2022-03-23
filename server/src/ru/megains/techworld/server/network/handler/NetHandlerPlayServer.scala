@@ -2,36 +2,40 @@ package ru.megains.techworld.server.network.handler
 
 import com.sun.javafx.geom.Vec3f
 import ru.megains.techworld.common.network.NetworkManager
+import ru.megains.techworld.common.network.handler.{INetHandler, INetHandlerPlayServer}
+import ru.megains.techworld.common.network.packet.Packet
+import ru.megains.techworld.common.network.packet.play.client.CPacketPlayer
+import ru.megains.techworld.common.utils.Logger
 import ru.megains.techworld.server.TWServer
+import ru.megains.techworld.server.entity.EntityPlayerS
 
 import scala.collection.immutable.HashSet
-//
-//class NetHandlerPlayServer(server: TWServer, val networkManager: NetworkManager, playerEntity: EntityPlayerMP) extends INetHandlerPlayServer with Logger[NetHandlerPlayServer] {
-//
-//    networkManager.setNetHandler(this)
-//
-//    playerEntity.connection = this
-//
-//
-//    var targetPos: Vec3f = _
-//    private var lastGoodX: Float = .0f
-//    private var lastGoodY: Float = .0f
-//    private var lastGoodZ: Float = .0f
-//    private var firstGoodX: Float = .0f
-//    private var firstGoodY: Float = .0f
-//    private var firstGoodZ: Float = .0f
-//
-//    override def sendPacket(packetIn: Packet[_ <: INetHandler]) {
-//
-//        try
-//            networkManager.sendPacket(packetIn)
-//
-//        catch {
-//            case throwable: Throwable =>
-//                log.error("sendPacket", throwable)
-//        }
-//    }
-//
+
+class NetHandlerPlayServer(server: TWServer, val networkManager: NetworkManager, playerEntity: EntityPlayerS) extends INetHandlerPlayServer with Logger {
+
+
+    playerEntity.connection = this
+
+
+    var targetPos: Vec3f = _
+    private var lastGoodX: Float = .0f
+    private var lastGoodY: Float = .0f
+    private var lastGoodZ: Float = .0f
+    private var firstGoodX: Float = .0f
+    private var firstGoodY: Float = .0f
+    private var firstGoodZ: Float = .0f
+
+    override def sendPacket(packetIn: Packet[_ <: INetHandler]): Unit = {
+
+        try
+            networkManager.sendPacket(packetIn)
+
+        catch {
+            case throwable: Throwable =>
+                log.error("sendPacket", throwable)
+        }
+    }
+
 //    def setPlayerLocation(x: Float, y: Float, z: Float, yaw: Float, pitch: Float) {
 //        setPlayerLocation(x, y, z, yaw, pitch, new HashSet[SPacketPlayerPosLook.EnumFlags.EnumFlags])
 //    }
@@ -60,47 +64,47 @@ import scala.collection.immutable.HashSet
 //        playerEntity.setPositionAndRotation(targetPos.x, targetPos.y, targetPos.z, f, f1)
 //        playerEntity.connection.sendPacket(new SPacketPlayerPosLook(x, y, z, yaw, pitch, relativeSet, teleportId))
 //    }
-//
-//
-//    override def onDisconnect(msg: String): Unit = {
-//
-//        log.info("{} lost connection: {}", Array[AnyRef](playerEntity.name, msg))
-//        server.playerList.playerLoggedOut(playerEntity)
-//
-//    }
-//
-//    override def processPlayer(packetIn: CPacketPlayer): Unit = {
-//
-//
-//        val d4: Float = packetIn.getX(playerEntity.posX)
-//        val d5: Float = packetIn.getY(playerEntity.posY)
-//        val d6: Float = packetIn.getZ(playerEntity.posZ)
-//        val f: Float = packetIn.getYaw(playerEntity.rotYaw)
-//        val f1: Float = packetIn.getPitch(playerEntity.rotPitch)
-//        var d7: Float = d4 - firstGoodX
-//        var d8: Float = d5 - firstGoodY
-//        var d9: Float = d6 - firstGoodZ
-//
-//        d7 = d4 - lastGoodX - playerEntity.posX
-//        d8 = d5 - lastGoodY - playerEntity.posY
-//        d9 = d6 - lastGoodZ - playerEntity.posZ
-//
-//        playerEntity.move(d7, d8, d9)
-//
-//        d7 = d4 - playerEntity.posX
-//        d8 = d5 - playerEntity.posY
-//        if (d8 > -0.5D || d8 < 0.5D) d8 = 0.0f
-//        d9 = d6 - playerEntity.posZ
-//
-//        playerEntity.setPositionAndRotation(d4, d5, d6, f, f1)
-//
-//        server.playerList.serverUpdateMountedMovingPlayer(playerEntity)
-//
-//       // lastGoodX = playerEntity.posX
-//       // lastGoodY = playerEntity.posY
-//       // lastGoodZ = playerEntity.posZ
-//
-//    }
+
+
+    override def disconnect(msg: String): Unit = {
+
+        log.info("{} lost connection: {}", Array[AnyRef](playerEntity.name, msg))
+        server.playerList.playerLoggedOut(playerEntity)
+
+    }
+
+    override def processPlayer(packetIn: CPacketPlayer): Unit = {
+
+
+        val d4: Float = packetIn.getX(playerEntity.posX)
+        val d5: Float = packetIn.getY(playerEntity.posY)
+        val d6: Float = packetIn.getZ(playerEntity.posZ)
+        val f: Float = packetIn.getYaw(playerEntity.rotYaw)
+        val f1: Float = packetIn.getPitch(playerEntity.rotPitch)
+        var d7: Float = d4 - firstGoodX
+        var d8: Float = d5 - firstGoodY
+        var d9: Float = d6 - firstGoodZ
+
+        d7 = d4 - lastGoodX - playerEntity.posX
+        d8 = d5 - lastGoodY - playerEntity.posY
+        d9 = d6 - lastGoodZ - playerEntity.posZ
+
+        playerEntity.move(d7, d8, d9)
+
+        d7 = d4 - playerEntity.posX
+        d8 = d5 - playerEntity.posY
+        if (d8 > -0.5D || d8 < 0.5D) d8 = 0.0f
+        d9 = d6 - playerEntity.posZ
+
+        playerEntity.setPositionAndRotation(d4, d5, d6, f, f1)
+
+        server.playerList.serverUpdateMountedMovingPlayer(playerEntity)
+
+       // lastGoodX = playerEntity.posX
+       // lastGoodY = playerEntity.posY
+       // lastGoodZ = playerEntity.posZ
+
+    }
 //
 //
 //    override def processHeldItemChange(packetIn: CPacketHeldItemChange): Unit = {
@@ -117,11 +121,9 @@ import scala.collection.immutable.HashSet
 //        playerEntity.openContainer.mouseClicked(packetIn.mouseX, packetIn.mouseY, packetIn.button, playerEntity)
 //        playerEntity.updateHeldItem()
 //    }
-//
-//    override def disconnect(msg: String): Unit = {
-//
-//    }
-//
+
+
+
 //    override def processPlayerMouse(packetIn: CPacketPlayerMouse): Unit = {
 //        packetIn.button match {
 //            case 0 =>
@@ -165,4 +167,4 @@ import scala.collection.immutable.HashSet
 //    override def processCloseWindow(packetIn: CPacketCloseWindow): Unit = {
 //        playerEntity.closeContainer()
 //    }
-//}
+}

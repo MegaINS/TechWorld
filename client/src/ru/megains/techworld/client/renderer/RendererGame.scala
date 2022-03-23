@@ -42,7 +42,7 @@ class RendererGame(game:TechWorld) {
     def setWorld(newWorld:WorldClient): Unit ={
         world = newWorld
         if(rendererWorld!=null) rendererWorld = null
-        rendererWorld = new RendererWorld
+        rendererWorld = new RendererWorld(world)
     }
 
     def render(): Unit = {

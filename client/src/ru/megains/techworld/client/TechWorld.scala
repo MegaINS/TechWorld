@@ -4,9 +4,13 @@ import org.joml.Vector3i
 import org.lwjgl.glfw.GLFW.{GLFW_KEY_M, _}
 import org.lwjgl.stb.STBImage.stbi_set_flip_vertically_on_load
 import ru.megains.techworld.client.entity.EntityPlayerC
+import ru.megains.techworld.client.register.{Bootstrap, GameRegisterRender}
 import ru.megains.techworld.client.renderer.gui.{GuiManager, GuiPlayerSelect, GuiScreen}
 import ru.megains.techworld.client.renderer.shader.ShaderManager
+import ru.megains.techworld.client.renderer.texture.TextureManager
+import ru.megains.techworld.client.renderer.world.ChunkRenderer
 import ru.megains.techworld.client.renderer.{Mouse, RendererGame, RendererWorld, Window}
+import ru.megains.techworld.client.utils.FrameCounter
 import ru.megains.techworld.client.world.WorldClient
 import ru.megains.techworld.common.network.{NetworkManager, PacketProcessHandler}
 import ru.megains.techworld.common.utils.{Logger, Timer}
@@ -46,19 +50,24 @@ class TechWorld(config: Configuration) extends Logger{
     }
 
     def init(): Boolean = {
-
+        ChunkRenderer.game = this
         log.info("Init Windows")
         window.create(this)
         log.info("Init Mouse")
         Mouse.init(this)
+
+        log.info("Init Bootstrap")
+        Bootstrap.init()
         log.info("Init ShaderManager")
         ShaderManager.init()
-        stbi_set_flip_vertically_on_load(true)
+        log.info("Init TextureManager")
+        TextureManager.init()
         log.info("Init GuiManager")
         guiManager.init()
         log.info("Init RendererGame")
         rendererGame.init()
-
+        GameRegisterRender.entityData.idRender.values.foreach(_.init())
+        FrameCounter.start()
         log.info("Start Game")
         guiManager.setScreen(new GuiPlayerSelect)
         true
@@ -70,6 +79,7 @@ class TechWorld(config: Configuration) extends Logger{
         Mouse.update()
 
         if(world!= null) rendererGame.render()
+        FrameCounter.gameRender()
     }
 
     def update(): Unit = {
@@ -105,12 +115,31 @@ class TechWorld(config: Configuration) extends Logger{
 
 
         guiManager.update()
+        FrameCounter.gameUpdate()
+        while (FrameCounter.isTimePassed(1000)) {
+
+
+            log.info(s"${
+                FrameCounter.frames
+            } fps, ${
+                FrameCounter.tick
+            } tick, ${
+                ChunkRenderer.chunkUpdate
+            } chunkUpdate, ${
+                ChunkRenderer.chunkRender / (if (FrameCounter.frames == 0) 1 else FrameCounter.frames)
+            } chunkRender, ${
+                ChunkRenderer.blockRender / (if (FrameCounter.frames == 0) 1 else FrameCounter.frames)
+            } blockRender ")
+            ChunkRenderer.reset()
+            FrameCounter.step(1000)
+        }
 
     }
 
     def gameLoop(): Unit = {
         timerFps.init()
         timerTps.init()
+        var start = TechWorld.getSystemTime
         while (running) {
 
             if (window.isClose) running = false
@@ -118,12 +147,16 @@ class TechWorld(config: Configuration) extends Logger{
 
             timerFps.update()
             for (_ <- 0 until timerFps.tick) {
+                start = TechWorld.getSystemTime
                 render()
+               // log.info(s"render = ${start - TechWorld.getSystemTime}")
             }
 
             timerTps.update()
             for (_ <- 0 until timerTps.tick) {
+                start = TechWorld.getSystemTime
                 update()
+               // log.info(s"update = ${start - TechWorld.getSystemTime}")
             }
             Thread.sleep(1)
 

@@ -1,8 +1,10 @@
 package ru.megains.techworld.server
 
 import ru.megains.techworld.common.network.{PacketProcessHandler, ServerStatusResponse}
+import ru.megains.techworld.common.register.{Bootstrap, GameRegister}
 import ru.megains.techworld.common.utils.Logger
 import ru.megains.techworld.server.network.NetworkSystem
+import ru.megains.techworld.server.world.WorldServer
 
 import scala.reflect.io.Path
 
@@ -13,9 +15,14 @@ class TWServer(directory:Path) extends Logger{
     val statusResponse: ServerStatusResponse = new ServerStatusResponse
     val packetProcessHandler:PacketProcessHandler = new PacketProcessHandler
     var timeOfLastWarning = 0L
-    val playerList:PlayerList = new PlayerList
+    val playerList:PlayerList = new PlayerList(this)
+    val world:WorldServer = new WorldServer()
+
+
     def start(): Boolean = {
         log.info("Starting TechWorld server  version 0.0.1")
+        Bootstrap.init(GameRegister)
+
 
         networkSystem.startLan(null, 20000)
         true
@@ -24,8 +31,12 @@ class TWServer(directory:Path) extends Logger{
 
 
     def tick(): Unit = {
+
         packetProcessHandler.tick()
         networkSystem.tick()
+        world.tick()
+        world.entityTracker.updateTrackedEntities()
+
     }
 
     def stop(): Unit = {

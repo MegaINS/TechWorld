@@ -5,7 +5,7 @@ import ru.megains.techworld.common.network.packet.{Packet, PacketBuffer}
 
 class CPacketDownloadFinish  extends Packet[INetHandlerDownloadServer] {
 
-    override def isImportant: Boolean = true
+    override def isImportant: Boolean = false
     override def readPacketData(packetBuffer: PacketBuffer): Unit = {
 
     }

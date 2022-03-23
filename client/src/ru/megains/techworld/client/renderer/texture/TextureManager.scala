@@ -1,18 +1,39 @@
 package ru.megains.techworld.client.renderer.texture
 
+
 import org.lwjgl.opengl.GL11
+import org.lwjgl.stb.STBImage.stbi_set_flip_vertically_on_load
+import ru.megains.techworld.client.register.GameRegisterRender
 
 import scala.collection.mutable
 
 
 object TextureManager {
 
+    val blocksTexture: TextureMap = new TextureMap("texture/blocks.png","block")
+   // val entityTexture: TextureMap = new TextureMap("texture/entity.png")
     val mapTTexture: mutable.HashMap[String, TTexture] = new mutable.HashMap[String, TTexture]
     var currentTexture: TTexture = _
     val missingTexture = new Texture("textures/missing.png")
     val baseTexture = new Texture("textures/base.png")
-    loadTexture("missing", missingTexture)
-    loadTexture("base", baseTexture)
+
+
+    def init(): Unit = {
+        stbi_set_flip_vertically_on_load(true)
+        blocksTexture.registerTexture( GameRegisterRender.blockData.idRender.values.toList)
+       // blocksTexture.registerTexture( GameRegisterRender.itemData.idRender.values.toList)
+        loadTexture(blocksTexture.name, TextureManager.blocksTexture)
+       // entityTexture.registerTexture( GameRegisterRender.entityData.idRender.values.toList)
+       // entityTexture.loadTextureAtlas()
+
+       // loadTexture( entityTexture.name,  entityTexture)
+
+        loadTexture("missing", missingTexture)
+        loadTexture("base", baseTexture)
+    }
+
+
+
 
     def bindTexture(texture: TTexture): Unit = {
 

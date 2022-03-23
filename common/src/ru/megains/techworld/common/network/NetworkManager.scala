@@ -118,6 +118,7 @@ class NetworkManager(packetProcess: IPacketProcessHandler) extends SimpleChannel
 
         if (channel.isOpen) {
             channel.close().awaitUninterruptibly
+
         }
 
     }

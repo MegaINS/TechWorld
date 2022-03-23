@@ -6,6 +6,7 @@ import ru.megains.techworld.client.renderer.gui.element.MButton
 class GuiInGameMenu() extends GuiScreen {
 
     val buttonMainMenu: MButton = new MButton("Main menu", 300, 40, _ => {
+        game.playerController.sendQuittingDisconnectingPacket()
         game.setWorld(null)
         game.setScreen(new GuiMainMenu())
     })

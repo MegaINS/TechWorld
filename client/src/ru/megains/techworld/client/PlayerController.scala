@@ -10,11 +10,16 @@ import ru.megains.techworld.common.world.World
 import scala.util.Random
 
 class PlayerController(game: TechWorld, netHandler:NetHandlerPlayClient) {
+    def sendQuittingDisconnectingPacket(): Unit = {
+        netHandler.netManager.closeChannel("Quitting")
+    }
+
 
     val gui = new GuiInGameMenu()
 
     def createClientPlayer(world: World): EntityPlayerC = {
         val player = new EntityPlayerC(/*game.playerName*/)
+        player.connection = netHandler
        // player.setWorld(world)
         player
     }
