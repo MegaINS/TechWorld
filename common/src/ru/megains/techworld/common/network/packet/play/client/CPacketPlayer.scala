@@ -35,7 +35,11 @@ class CPacketPlayer extends Packet[INetHandlerPlayServer] {
     }
 
 
-    def getX(posX: Float): Float = if (moving) x else posX
+    def getX(posX: Float): Float =
+        if (moving)
+            x
+        else
+            posX
 
     def getY(posY: Float): Float = if (moving) y else posY
 

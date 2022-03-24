@@ -34,7 +34,7 @@ class TWServer(directory:Path) extends Logger{
 
         packetProcessHandler.tick()
         networkSystem.tick()
-        world.tick()
+        world.update()
         world.entityTracker.updateTrackedEntities()
 
     }

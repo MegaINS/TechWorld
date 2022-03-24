@@ -10,7 +10,7 @@ import ru.megains.techworld.common.network.packet.handshake.client.CHandshake
 import ru.megains.techworld.common.network.packet.login.client.CPacketLoginStart
 import ru.megains.techworld.common.network.packet.login.server.SPacketLoginSuccess
 import ru.megains.techworld.common.network.packet.play.client.CPacketPlayer
-import ru.megains.techworld.common.network.packet.play.server.{SPacketChunkData, SPacketJoinGame, SPacketPlayerPosLook, SPacketSpawnPlayer, SPacketUnloadChunk}
+import ru.megains.techworld.common.network.packet.play.server.{SPacketChunkData, SPacketDestroyEntities, SPacketEntity, SPacketEntityTeleport, SPacketEntityVelocity, SPacketJoinGame, SPacketMobSpawn, SPacketPlayerPosLook, SPacketSpawnPlayer, SPacketUnloadChunk}
 import ru.megains.techworld.common.network.packet.status.client.{CPacketPing, CPacketServerQuery}
 import ru.megains.techworld.common.network.packet.status.server.{SPacketPong, SPacketServerInfo}
 
@@ -89,6 +89,15 @@ object ConnectionState {
         registerPacket(classOf[SPacketChunkData])
         registerPacket(classOf[SPacketUnloadChunk])
         registerPacket(classOf[SPacketSpawnPlayer])
+        registerPacket(classOf[SPacketMobSpawn])
+        registerPacket(classOf[SPacketEntityVelocity])
+        registerPacket(classOf[SPacketEntityTeleport])
+        registerPacket(classOf[SPacketEntity])
+        registerPacket(classOf[SPacketEntity.SPacketEntityRelMove])
+        registerPacket(classOf[SPacketEntity.SPacketEntityLook])
+        registerPacket(classOf[SPacketEntity.SPacketEntityLookMove])
+        registerPacket(classOf[SPacketDestroyEntities])
+
 
         registerPacket( classOf[CPacketPlayer])
         registerPacket( classOf[CPacketPlayer.Position])

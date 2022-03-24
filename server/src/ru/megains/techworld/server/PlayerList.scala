@@ -1,5 +1,6 @@
 package ru.megains.techworld.server
 
+import ru.megains.techworld.common.entity.mob.EntityBot
 import ru.megains.techworld.common.network.NetworkManager
 import ru.megains.techworld.common.network.packet.play.server.{SPacketJoinGame, SPacketPlayerPosLook}
 import ru.megains.techworld.server.entity.EntityPlayerS
@@ -8,6 +9,7 @@ import ru.megains.techworld.server.world.WorldServer
 
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
+import scala.util.Random
 
 class PlayerList(server:TWServer) {
 
@@ -29,10 +31,13 @@ class PlayerList(server:TWServer) {
 
         val nethandlerplayserver: NetHandlerPlayServer = new NetHandlerPlayServer(server, networkManager, player)
         networkManager.setNetHandler(nethandlerplayserver)
-        nethandlerplayserver.sendPacket(new SPacketJoinGame())
+        nethandlerplayserver.sendPacket(new SPacketJoinGame(player))
         nethandlerplayserver.sendPacket(new SPacketPlayerPosLook(player.posX,player.posY,player.posZ,player.rotYaw,player.rotPitch))
         player.world = server.world
         playerLoggedIn(player)
+        val entityCube = new EntityBot(server.world)
+        entityCube.setPosition(player.posX + Random.nextInt(50) - 25, player.posY + Random.nextInt(50), player.posZ + Random.nextInt(50) - 25)
+        server.world.spawnEntityInWorld(entityCube)
     }
 
     def playerLoggedIn(playerIn: EntityPlayerS): Unit = {
@@ -58,7 +63,7 @@ class PlayerList(server:TWServer) {
         val worldserver: WorldServer = playerIn.world.asInstanceOf[WorldServer]
 
         //writePlayerData(playerIn)
-       // worldserver.removeEntity(playerIn)
+        worldserver.removeEntity(playerIn)
         worldserver.playerManager.removePlayer(playerIn)
         playerEntityList -= playerIn
 
@@ -66,6 +71,7 @@ class PlayerList(server:TWServer) {
         if (playerIn == player) {
             nameToPlayerMap -= playerIn.name
         }
+
     }
 
     def serverUpdateMountedMovingPlayer(player: EntityPlayerS): Unit = {

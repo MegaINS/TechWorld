@@ -45,16 +45,17 @@ class ServerCommand(server: TWServer) extends Thread {
 //            }
         })
         commands += "info" -> ((command: Array[String]) => {
-//            val player = server.playerList.getPlayerByName(command(1))
-//            if (player != null) {
-//                println("Player position:")
-//                println("x: " + player.posX)
-//                println("y: " + player.posY)
-//                println("z: " + player.posZ)
-//                println("Game type: " + player.interactionManager.gameType.name)
-//            } else {
-//                println("Player offline")
-//            }
+            val player = server.playerList.getPlayerByName(command(1))
+            if (player != null) {
+                println("id: " + player.id)
+                println("Player position:")
+                println("x: " + player.posX)
+                println("y: " + player.posY)
+                println("z: " + player.posZ)
+               // println("Game type: " + player.interactionManager.gameType.name)
+            } else {
+                println("Player offline")
+            }
         })
 
         commands += "status"->((_: Array[String]) => {

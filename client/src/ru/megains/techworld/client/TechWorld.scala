@@ -119,17 +119,17 @@ class TechWorld(config: Configuration) extends Logger{
         while (FrameCounter.isTimePassed(1000)) {
 
 
-            log.info(s"${
-                FrameCounter.frames
-            } fps, ${
-                FrameCounter.tick
-            } tick, ${
-                ChunkRenderer.chunkUpdate
-            } chunkUpdate, ${
-                ChunkRenderer.chunkRender / (if (FrameCounter.frames == 0) 1 else FrameCounter.frames)
-            } chunkRender, ${
-                ChunkRenderer.blockRender / (if (FrameCounter.frames == 0) 1 else FrameCounter.frames)
-            } blockRender ")
+//            log.info(s"${
+//                FrameCounter.frames
+//            } fps, ${
+//                FrameCounter.tick
+//            } tick, ${
+//                ChunkRenderer.chunkUpdate
+//            } chunkUpdate, ${
+//                ChunkRenderer.chunkRender / (if (FrameCounter.frames == 0) 1 else FrameCounter.frames)
+//            } chunkRender, ${
+//                ChunkRenderer.blockRender / (if (FrameCounter.frames == 0) 1 else FrameCounter.frames)
+//            } blockRender ")
             ChunkRenderer.reset()
             FrameCounter.step(1000)
         }

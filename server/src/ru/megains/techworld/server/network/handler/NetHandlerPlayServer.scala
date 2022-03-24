@@ -69,8 +69,18 @@ class NetHandlerPlayServer(server: TWServer, val networkManager: NetworkManager,
     override def disconnect(msg: String): Unit = {
 
         log.info("{} lost connection: {}", Array[AnyRef](playerEntity.name, msg))
+
         server.playerList.playerLoggedOut(playerEntity)
 
+
+
+
+
+
+//        if (this.serverController.isSinglePlayer && this.playerEntity.getCommandSenderName == this.serverController.getServerOwner) {
+//            logger.info("Stopping singleplayer server as player logged out")
+//            this.serverController.initiateShutdown()
+//        }
     }
 
     override def processPlayer(packetIn: CPacketPlayer): Unit = {
@@ -93,16 +103,16 @@ class NetHandlerPlayServer(server: TWServer, val networkManager: NetworkManager,
 
         d7 = d4 - playerEntity.posX
         d8 = d5 - playerEntity.posY
-        if (d8 > -0.5D || d8 < 0.5D) d8 = 0.0f
+      //  if (d8 > -0.5D || d8 < 0.5D) d8 = 0.0f
         d9 = d6 - playerEntity.posZ
 
         playerEntity.setPositionAndRotation(d4, d5, d6, f, f1)
 
         server.playerList.serverUpdateMountedMovingPlayer(playerEntity)
 
-       // lastGoodX = playerEntity.posX
-       // lastGoodY = playerEntity.posY
-       // lastGoodZ = playerEntity.posZ
+        lastGoodX = playerEntity.posX
+        lastGoodY = playerEntity.posY
+        lastGoodZ = playerEntity.posZ
 
     }
 //

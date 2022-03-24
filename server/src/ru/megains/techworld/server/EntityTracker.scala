@@ -1,6 +1,7 @@
 package ru.megains.techworld.server
 
 import ru.megains.techworld.common.entity.Entity
+import ru.megains.techworld.common.entity.mob.EntityBot
 import ru.megains.techworld.server.entity.EntityPlayerS
 import ru.megains.techworld.server.world.WorldServer
 
@@ -16,8 +17,9 @@ class EntityTracker(world: WorldServer) {
     def addEntityToTracker(entity: Entity): Unit = {
         entity match {
             case entityPlayerS: EntityPlayerS =>
-                addEntityToTracker(entity, 512, 2)
+                addEntityToTracker(entity, 512, 2,true)
                 trackedEntities.filter(_.entity != entityPlayerS).foreach(_.tryStartWachingThis(entityPlayerS))
+            case _: EntityBot => addEntityToTracker(entity, 64, 3, true)
             //            case _: EntityFishHook => this.addEntityToTracker(par1Entity, 64, 5, true)
             //            case _: EntityArrow => this.addEntityToTracker(par1Entity, 64, 20, false)
             //            case _: EntitySmallFireball => this.addEntityToTracker(par1Entity, 64, 10, false)
@@ -71,5 +73,24 @@ class EntityTracker(world: WorldServer) {
                                 .filter(_.entity != eps)
                                 .foreach(_.tryStartWachingThis(eps))
                 )
+    }
+
+    def removeEntityFromAllTrackingPlayers(entity:Entity): Unit = {
+        entity match {
+            case entityPlayer: EntityPlayerS =>
+                removePlayerFromTrackers(entityPlayer)
+            case _ =>
+        }
+
+        trackedEntityIDs.remove(entity.id) match {
+            case Some(value) =>
+                trackedEntities.remove(value)
+                value.informAllAssociatedPlayersOfItemDestruction()
+            case None =>
+        }
+    }
+
+    def removePlayerFromTrackers(entity:EntityPlayerS):Unit = {
+        trackedEntities.foreach(_.removePlayerFromTracker(entity))
     }
 }

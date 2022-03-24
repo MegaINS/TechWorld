@@ -98,10 +98,16 @@ class GuiDebugInfo() extends GuiScreen {
 
 
     }
-
+    var id = -1
 
     override def update(): Unit = {
         player = game.player
+
+        if (player.id != x) {
+            id = player.id
+            name.text = s"Name: ${game.playerName} $id"
+        }
+
         if (player.posX != x) {
             x = player.posX
             position_x.text = "x: " + player.posX

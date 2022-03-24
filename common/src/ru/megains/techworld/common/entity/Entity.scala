@@ -3,8 +3,21 @@ package ru.megains.techworld.common.entity
 import ru.megains.techworld.common.physics.BoundingBox
 import ru.megains.techworld.common.world.World
 
+import scala.collection.mutable
+
 abstract class Entity(wight: Float, height: Float) {
 
+    def isEntityAlive: Boolean = !isDead
+    var isDead = false
+
+    def setDead(): Unit = {
+        isDead = true
+    }
+
+
+    def update(): Unit ={
+
+    }
 
     def setVelocity(motionXIn: Float, motionYIn: Float, motionZIn: Float): Unit = {
         motionX = motionXIn
@@ -25,7 +38,7 @@ abstract class Entity(wight: Float, height: Float) {
     var rotYaw: Float = 0
     var rotPitch: Float = 0
 
-
+    var onGround  = true
     var isJumping: Boolean = false
     var moveStrafing: Int = 0
     var moveForward: Int = 0
@@ -101,10 +114,80 @@ abstract class Entity(wight: Float, height: Float) {
         rotPitch = pitch % 360.0F
     }
 
+    var goY = 0.5f
     def move(x: Float, y: Float, z: Float): Unit = {
-        posX += x
-        posY += y
-        posZ += z
+        var x0: Float = x
+        var z0: Float = z
+        var y0: Float = y
+        var x1: Float = x
+        var z1: Float = z
+        var y1: Float = y
+
+        val bodyCopy: BoundingBox = body.getCopy
+        var physicalBodes: mutable.HashSet[BoundingBox] = world.addBlocksInList(body.expand(x0, y0, z0))
+
+        physicalBodes.foreach(aabb => {
+            y0 = aabb.checkYcollision(body, y0)
+        })
+        body.move(0, y0, 0)
+
+        physicalBodes.foreach(aabb => {
+            x0 = aabb.checkXcollision(body, x0)
+        })
+        body.move(x0, 0, 0)
+
+        physicalBodes.foreach(aabb => {
+            z0 = aabb.checkZcollision(body, z0)
+        })
+        body.move(0, 0, z0)
+
+        onGround = y != y0 && y < 0.0F
+        var a = true
+        if (onGround && (Math.abs(x) > Math.abs(x0) || Math.abs(z) > Math.abs(z0))) {
+            val b: Float = 0.0625f
+            var tY = b
+            while (tY <= goY && a) {
+                val bodyCopy1: BoundingBox = bodyCopy.getCopy
+                x1 = x
+                z1 = z
+                y1 = y
+                physicalBodes = world.addBlocksInList(bodyCopy1.expand(x1, tY, z1))
+
+                physicalBodes.foreach(aabb => {
+                    y1 = aabb.checkYcollision(bodyCopy1, tY)
+                })
+                bodyCopy1.move(0, y1, 0)
+
+                physicalBodes.foreach(aabb => {
+                    x1 = aabb.checkXcollision(bodyCopy1, x1)
+                })
+                bodyCopy1.move(x1, 0, 0)
+
+                physicalBodes.foreach(aabb => {
+                    z1 = aabb.checkZcollision(bodyCopy1, z1)
+                })
+                bodyCopy1.move(0, 0, z1)
+
+                if (Math.abs(x1) > Math.abs(x0) || Math.abs(z1) > Math.abs(z0)) {
+                    body.set(bodyCopy1)
+                    a = false
+                }
+                tY += b
+            }
+        }
+        if (x0 != x & x1 != x) {
+            motionX = 0.0F
+        }
+        if (y0 != y) {
+            motionY = 0.0F
+        }
+        if (z0 != z & z1 != z) {
+            motionZ = 0.0F
+        }
+
+        posX = body.getCenterX
+        posY = body.minY
+        posZ = body.getCenterZ
     }
 
     def turn(xo: Float, yo: Float): Unit = {
@@ -145,6 +228,21 @@ abstract class Entity(wight: Float, height: Float) {
         val dY = posY - posYIn
         val dZ = posZ - posZIn
         dX * dX + dY * dY + dZ * dZ
+    }
+
+
+    def canEqual(other: Any): Boolean = other.isInstanceOf[Entity]
+
+    override def equals(other: Any): Boolean = other match {
+        case that: Entity =>
+            (that canEqual this) &&
+                    id == that.id
+        case _ => false
+    }
+
+    override def hashCode(): Int = {
+        val state = Seq(id)
+        state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
     }
 }
 

@@ -4,10 +4,12 @@ import ru.megains.techworld.client.entity.EntityOtherPlayerC
 import ru.megains.techworld.client.{PlayerController, TechWorld}
 import ru.megains.techworld.client.renderer.gui.{GuiDownloadTerrain, GuiScreen}
 import ru.megains.techworld.client.world.WorldClient
+import ru.megains.techworld.common.entity.EntityLivingBase
 import ru.megains.techworld.common.network.NetworkManager
 import ru.megains.techworld.common.network.handler.{INetHandler, INetHandlerPlayClient}
 import ru.megains.techworld.common.network.packet.Packet
-import ru.megains.techworld.common.network.packet.play.server.{SPacketChunkData, SPacketEntity, SPacketEntityTeleport, SPacketEntityVelocity, SPacketJoinGame, SPacketPlayerPosLook, SPacketSpawnPlayer, SPacketUnloadChunk}
+import ru.megains.techworld.common.network.packet.play.server.{SPacketChunkData, SPacketDestroyEntities, SPacketEntity, SPacketEntityTeleport, SPacketEntityVelocity, SPacketJoinGame, SPacketMobSpawn, SPacketPlayerPosLook, SPacketSpawnPlayer, SPacketUnloadChunk}
+import ru.megains.techworld.common.register.Entities
 import ru.megains.techworld.common.utils.Logger
 import ru.megains.techworld.common.world.Chunk
 
@@ -29,6 +31,7 @@ class NetHandlerPlayClient(game: TechWorld, previousScene: GuiScreen, val netMan
         worldClient = new WorldClient(game)
         game.setWorld(worldClient)
 
+        game.player.id = packetIn.playerId
         //        gameScene = new SceneGame(gameController)
         //        gameController.setScene(gameScene)
         //
@@ -228,6 +231,40 @@ class NetHandlerPlayClient(game: TechWorld, previousScene: GuiScreen, val netMan
             val var10 = if (packetIn.isLook) (packetIn.pitch * 360).toFloat / 256.0F
             else entity.rotPitch
             entity.setPositionAndRotation2(var3, var5, var7, var9, var10, 3)
+        }
+    }
+
+    override def handleEntitySpawnMob(packetIn:SPacketMobSpawn): Unit = {
+        val posX = packetIn.posX.toFloat / 32.0f
+        val posY = packetIn.posY.toFloat / 32.0f
+        val posZ = packetIn.posZ.toFloat / 32.0f
+        val rotYaw = (packetIn.rotYaw * 360).toFloat / 256.0F
+        val rotPitch = (packetIn.rotPitch * 360).toFloat / 256.0F
+        val entity = Entities.createEntityByID(packetIn.entityClassId, game.world).asInstanceOf[EntityLivingBase]
+        entity.serverPosX = packetIn.posX
+        entity.serverPosY = packetIn.posY
+        entity.serverPosZ = packetIn.posZ
+        //entity.rotationYawHead = (packetIn.func_149032_n * 360).toFloat / 256.0F
+//        val var11 = entity.getParts
+//        if (var11 != null) {
+//            val var12 = packetIn.func_149024_d - entity.getEntityId
+//            for (var13 <- 0 until var11.length) {
+//                var11(var13).setEntityId(var11(var13).getEntityId + var12)
+//            }
+//        }
+        entity.id = packetIn.entityId
+        entity.setPositionAndRotation(posX, posY, posZ, rotYaw, rotPitch)
+        entity.motionX = (packetIn.motionX.toFloat / 8000.0F).toFloat
+        entity.motionY = (packetIn.motionY.toFloat / 8000.0F).toFloat
+        entity.motionZ = (packetIn.motionZ.toFloat / 8000.0F).toFloat
+        worldClient.addEntityToWorld(packetIn.entityId, entity)
+       // val var14 = packetIn.func_149027_c
+       // if (var14 != null) entity.getDataWatcher.updateWatchedObjectsFromList(var14)
+    }
+
+    override def handleDestroyEntities(packetIn:SPacketDestroyEntities):Unit = {
+        for (var2 <- packetIn.entitiesId.indices) {
+            worldClient.removeEntityFromWorld(packetIn.entitiesId(var2))
         }
     }
 }

@@ -11,27 +11,28 @@ import scala.collection.mutable.ArrayBuffer
 class WorldClient(game: TechWorld) extends World {
 
 
+
     val entityList = new mutable.HashSet[Entity]()
 
     val entitySpawnQueue = new mutable.HashSet[Entity]()
 
-    val entityHashSet = new mutable.HashMap[Int,Entity]()
+    val entityHashSet = new mutable.HashMap[Int, Entity]()
 
     def addEntityToWorld(entityId: Int, entity: Entity): Unit = {
         //val var3 = getEntityByID(entityId)
-       // if (var3 != null) setEntityDead(var3)
+        // if (var3 != null) setEntityDead(var3)
         entityList += entity
         entity.id = entityId
         if (!spawnEntityInWorld(entity)) entitySpawnQueue.add(entity)
         entityHashSet += entityId -> entity
     }
+
     val chunkProvider = new ChunkProviderClient(this)
 
     def doPreChunk(pos: ChunkPosition, loadChunk: Boolean): Any = {
         if (loadChunk) {
             chunkProvider.loadChunk(pos)
         } else {
-            println(pos)
             chunkProvider.unloadChunk(pos)
             game.rendererGame.rendererWorld.unload(pos)
             // this.markBlockRangeForRenderUpdate(chunkX * 16, 0, chunkZ * 16, chunkX * 16 + 15, 256, chunkZ * 16 + 15)
@@ -40,11 +41,36 @@ class WorldClient(game: TechWorld) extends World {
     }
 
 
-    def update(): Unit = {
+    override def update(): Unit = {
 
+    }
+
+    override def removeEntity(entity: Entity): Unit = {
+        super.removeEntity(entity)
+        entityList -= entity
+    }
+
+    override def onEntityRemoved(entity: Entity): Unit = {
+        if (entityList.contains(entity)) {
+            if (entity.isEntityAlive) {
+                entitySpawnQueue.add(entity)
+            } else {
+                entityList.remove(entity)
+            }
+        }
+    }
+
+    def removeEntityFromWorld(id: Int): Entity = {
+        entityHashSet.remove(id) match {
+            case Some(entity) =>
+                entityList.remove(entity)
+                removeEntity(entity)
+                entity
+            case None => null
+        }
     }
 
     override def onEntityAdded(entity: Entity): Unit = {}
 
-    override def getEntityByID(id: Int): Entity = if(game.player.id == id) game.player else entityHashSet.get(id).orNull
+    override def getEntityByID(id: Int): Entity = if (game.player.id == id) game.player else entityHashSet.get(id).orNull
 }

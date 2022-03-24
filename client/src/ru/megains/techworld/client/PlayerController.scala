@@ -20,7 +20,7 @@ class PlayerController(game: TechWorld, netHandler:NetHandlerPlayClient) {
     def createClientPlayer(world: World): EntityPlayerC = {
         val player = new EntityPlayerC(/*game.playerName*/)
         player.connection = netHandler
-       // player.setWorld(world)
+        player.world = world
         player
     }
 

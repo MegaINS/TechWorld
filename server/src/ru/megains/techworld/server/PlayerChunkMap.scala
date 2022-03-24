@@ -21,8 +21,8 @@ class PlayerChunkMap(val worldServer: WorldServer) {
 
     val playerInstancesToUpdate: mutable.HashSet[PlayerChunkMapEntry] = new mutable.HashSet[PlayerChunkMapEntry]()
 
-    val playerViewRadiusH: Int = 2
-    val playerViewRadiusW: Int = 5
+    val playerViewRadiusH: Int = 1
+    val playerViewRadiusW: Int = 1
     var previousTotalWorldTime: Long = 0
 
     val CAN_GENERATE_CHUNKS: EntityPlayerS => Boolean = (player: EntityPlayerS) => player != null

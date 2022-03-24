@@ -10,12 +10,17 @@ import scala.collection.mutable.ArrayBuffer
 
 class WorldServer extends World{
 
-   val playerManager: PlayerChunkMap = new PlayerChunkMap(this)
-   val entityTracker: EntityTracker = new EntityTracker(this)
-   val chunkProvider:ChunkProviderServer = new ChunkProviderServer(this)
+
+
+
+
+      val playerManager = new PlayerChunkMap(this)
+   val entityTracker = new EntityTracker(this)
+   val chunkProvider = new ChunkProviderServer(this)
    val entityIdMap = new mutable.HashMap[Int,Entity]()
 
-   def tick(): Unit = {
+   override def update(): Unit = {
+      super.update()
       playerManager.tick()
    }
 
@@ -24,7 +29,9 @@ class WorldServer extends World{
       entityIdMap += entity.id -> entity
    }
 
-   override def getEntityByID(id: Int): Entity = {
-      entityIdMap.get(id).orNull
+   override def onEntityRemoved(entity: Entity): Unit = {
+      entityIdMap -= entity.id
    }
+
+   override def getEntityByID(id: Int): Entity = entityIdMap.get(id).orNull
 }
