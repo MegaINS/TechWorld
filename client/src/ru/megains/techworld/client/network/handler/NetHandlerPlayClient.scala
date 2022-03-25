@@ -226,11 +226,11 @@ class NetHandlerPlayClient(game: TechWorld, previousScene: GuiScreen, val netMan
             val var3 = entity.serverPosX.toFloat / 32.0F
             val var5 = entity.serverPosY.toFloat / 32.0F
             val var7 = entity.serverPosZ.toFloat / 32.0F
-            val var9 = if (packetIn.isLook) (packetIn.rotation * 360).toFloat / 256.0F
+            val rotYaw = if (packetIn.isLook) (packetIn.rotYaw * 360).toFloat / 256.0F
             else entity.rotYaw
-            val var10 = if (packetIn.isLook) (packetIn.pitch * 360).toFloat / 256.0F
+            val rotPitch = if (packetIn.isLook) (packetIn.rotPitch * 360).toFloat / 256.0F
             else entity.rotPitch
-            entity.setPositionAndRotation2(var3, var5, var7, var9, var10, 3)
+            entity.setPositionAndRotation2(var3, var5, var7, rotYaw, rotPitch, 3)
         }
     }
 

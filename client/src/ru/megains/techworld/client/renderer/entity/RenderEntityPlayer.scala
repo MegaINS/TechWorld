@@ -5,7 +5,7 @@ import ru.megains.techworld.client.renderer.api.TTextureRegister
 import ru.megains.techworld.client.renderer.mesh.{Mesh, MeshMaker}
 import ru.megains.techworld.client.renderer.model.TModel
 import ru.megains.techworld.client.renderer.shader.data.Shader
-import ru.megains.techworld.client.renderer.texture.{TTexture, Texture}
+import ru.megains.techworld.client.renderer.texture.{TTexture, Texture, TextureManager}
 import ru.megains.techworld.common.entity.Entity
 import ru.megains.techworld.common.physics.BoundingBox
 import ru.megains.techworld.common.world.World
@@ -13,7 +13,7 @@ import ru.megains.techworld.common.world.World
 import java.awt.Color
 
 
-object RenderEntityCube extends TRenderEntity with TModel {
+object RenderEntityPlayer extends TRenderEntity with TModel {
 
 
     var entityCube: Mesh = _
@@ -28,7 +28,7 @@ object RenderEntityCube extends TRenderEntity with TModel {
     var rightLeg: EntityBox = _
 
     override def init(): Unit = {
-        entityTexture = new Texture("textures/entity/steve.png")
+        entityTexture =  TextureManager.getTexture("textures/entity/steve.png")
         val mm = MeshMaker.startMake(GL_LINES)
         val aabb: BoundingBox = new BoundingBox(-0.3f, 0, -0.3f, 0.3f, 1.8f, 0.3f)
 
@@ -113,7 +113,6 @@ object RenderEntityCube extends TRenderEntity with TModel {
         entityCube.render()
 
         entityTors.yRot = -entity.rotYaw
-        //entityTors.yRot += a
         entityTors.posX = entity.posX
         entityTors.posY = entity.posY + 0.6f
         entityTors.posZ = entity.posZ

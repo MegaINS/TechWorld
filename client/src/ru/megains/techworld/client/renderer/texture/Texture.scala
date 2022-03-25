@@ -6,7 +6,7 @@ import org.lwjgl.stb.STBImage.{stbi_failure_reason, stbi_info_from_memory, stbi_
 import org.lwjgl.system.MemoryStack.stackPush
 import ru.megains.techworld.client.File
 
-class Texture (name: String) extends TTexture() {
+private class Texture(name: String) extends TTexture() {
 
 
     override def loadTexture(): Boolean = {

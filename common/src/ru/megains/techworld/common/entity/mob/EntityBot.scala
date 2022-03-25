@@ -29,7 +29,7 @@ class EntityBot(worldIn: World) extends EntityLivingBase(1.8f, 0.6f, 1.6f) {
 //            }
 
             //if(x % 100 == 0){
-            turn(0, 10)
+            turn(10, 0)
             // }
         }
 

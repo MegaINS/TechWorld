@@ -7,8 +7,8 @@ import ru.megains.techworld.common.network.packet.{Packet, PacketBuffer}
 class SPacketEntity extends Packet[INetHandlerPlayClient] {
     var name = ""
     var entityId: Int = 0
-    var rotation: Int = 0
-    var pitch: Int = 0
+    var rotYaw: Int = 0
+    var rotPitch: Int = 0
     var moveX: Int = 0
     var moveY: Int = 0
     var moveZ: Int = 0
@@ -66,38 +66,41 @@ object SPacketEntity{
 
     class SPacketEntityLook extends SPacketEntity {
 
-        def this(entityIdIn: Int, rotateIn: Byte, pitchIn: Byte) {
+        isLook = true
+
+        def this(entityIdIn: Int, rotYawIn: Byte, rotPitchIn: Byte) {
             this()
             entityId = entityIdIn
-            pitch = pitchIn
-            rotation = rotateIn
-            isLook = true
+            rotPitch = rotPitchIn
+            rotYaw = rotYawIn
         }
 
         override def writePacketData(buf: PacketBuffer): Unit = {
             super.writePacketData(buf)
-            buf.writeByte(pitch)
-            buf.writeByte(rotation)
+            buf.writeByte(rotPitch)
+            buf.writeByte(rotYaw)
         }
 
         override def readPacketData(buf: PacketBuffer): Unit = {
             super.readPacketData(buf)
-            pitch = buf.readByte()
-            rotation = buf.readByte()
+            rotPitch = buf.readByte()
+            rotYaw = buf.readByte()
         }
 
     }
     class SPacketEntityLookMove extends SPacketEntity {
 
-        def this(entityIdIn: Int, moveXIn: Byte, moveYIn: Byte, moveZIn: Byte, rotateIn: Byte, pitchIn: Byte) {
+        isLook = true
+
+
+        def this(entityIdIn: Int, moveXIn: Byte, moveYIn: Byte, moveZIn: Byte, rotYawIn: Byte, rotPitchIn: Byte) {
             this()
             entityId = entityIdIn
             moveX = moveXIn
             moveY = moveYIn
             moveZ = moveZIn
-            pitch = pitchIn
-            rotation = rotateIn
-            isLook = true
+            rotPitch = rotPitchIn
+            rotYaw = rotYawIn
         }
 
         override def writePacketData(buf: PacketBuffer): Unit = {
@@ -105,8 +108,8 @@ object SPacketEntity{
             buf.writeByte(moveX)
             buf.writeByte(moveY)
             buf.writeByte(moveZ)
-            buf.writeByte(pitch)
-            buf.writeByte(rotation)
+            buf.writeByte(rotPitch)
+            buf.writeByte(rotYaw)
         }
 
         override def readPacketData(buf: PacketBuffer): Unit = {
@@ -114,8 +117,8 @@ object SPacketEntity{
             moveX = buf.readByte()
             moveY = buf.readByte()
             moveZ = buf.readByte()
-            pitch = buf.readByte()
-            rotation = buf.readByte()
+            rotPitch = buf.readByte()
+            rotYaw = buf.readByte()
         }
 
     }

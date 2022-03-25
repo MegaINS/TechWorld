@@ -8,30 +8,28 @@ import ru.megains.techworld.server.entity.EntityPlayerS
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
-class WorldServer extends World{
+class WorldServer extends World {
 
 
+    val playerManager = new PlayerChunkMap(this)
+    val entityTracker = new EntityTracker(this)
+    val chunkProvider = new ChunkProviderServer(this)
+    val entityIdMap = new mutable.HashMap[Int, Entity]()
 
+    override def update(): Unit = {
+        super.update()
+        playerManager.tick()
+    }
 
+    override def onEntityAdded(entity: Entity): Unit = {
+        entityTracker.addEntityToTracker(entity)
+        entityIdMap += entity.id -> entity
+    }
 
-      val playerManager = new PlayerChunkMap(this)
-   val entityTracker = new EntityTracker(this)
-   val chunkProvider = new ChunkProviderServer(this)
-   val entityIdMap = new mutable.HashMap[Int,Entity]()
+    override def onEntityRemoved(entity: Entity): Unit = {
+        entityIdMap -= entity.id
+        entityTracker.removeEntityFromAllTrackingPlayers(entity)
+    }
 
-   override def update(): Unit = {
-      super.update()
-      playerManager.tick()
-   }
-
-   override def onEntityAdded(entity: Entity): Unit = {
-      entityTracker.addEntityToTracker(entity)
-      entityIdMap += entity.id -> entity
-   }
-
-   override def onEntityRemoved(entity: Entity): Unit = {
-      entityIdMap -= entity.id
-   }
-
-   override def getEntityByID(id: Int): Entity = entityIdMap.get(id).orNull
+    override def getEntityByID(id: Int): Entity = entityIdMap.get(id).orNull
 }

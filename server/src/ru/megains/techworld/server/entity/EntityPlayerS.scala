@@ -38,7 +38,7 @@ class EntityPlayerS(val name:String) extends EntityPlayer{
 
 
 
-    def func_152339_d(entity:Entity): Unit = {
+    def destroyEntityNetCache(entity:Entity): Unit = {
         if (entity.isInstanceOf[EntityPlayer]) connection.sendPacket(new SPacketDestroyEntities(Array[Int](entity.id)))
         else destroyedItemsNetCache += entity.id
     }

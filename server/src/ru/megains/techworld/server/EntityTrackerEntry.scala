@@ -59,10 +59,8 @@ class EntityTrackerEntry(val entity: Entity, blocksDistance: Int, updateFrequenc
                     //                }
                 }
 
-            }
-            else if (trackingPlayers.contains(entityPlayerS)) {
-                trackingPlayers.remove(entityPlayerS)
-                //  entityPlayerS.destroyedItemsNetCache.add(Integer.valueOf(entity.id))
+            } else {
+                removePlayerFromTracker(entityPlayerS)
             }
         }
     }
@@ -205,35 +203,35 @@ class EntityTrackerEntry(val entity: Entity, blocksDistance: Int, updateFrequenc
         //        }
         //        else
         if (ticks % updateFrequency == 0 || entity.isAirBorne /*|| entity.getDataWatcher.hasChanges*/ ) {
-            var var2 = 0
-            var var3 = 0
+            var posX = 0
+            var posY = 0
             //if (entity.ridingEntity == null) {
             ticksSinceLastForcedTeleport += 1
-            //var2 = entity.entitySize.multiplyBy32AndRound(entity.posX)
-            var2 = Math.floor(entity.posX * 32.0D).toInt
-            var3 = Math.floor(entity.posY * 32.0D).toInt
-            // val var4 = entity.entitySize.multiplyBy32AndRound(entity.posZ)
-            val var4 = Math.floor(entity.posZ * 32.0D).toInt
-            val var5 = Math.floor(entity.rotYaw * 256.0F / 360.0F).toInt
-            val var6 = Math.floor(entity.rotPitch * 256.0F / 360.0F).toInt
-            val var7 = var2 - lastScaledXPosition
-            val var8 = var3 - lastScaledYPosition
-            val var9 = var4 - lastScaledZPosition
+            //posX = entity.entitySize.multiplyBy32AndRound(entity.posX)
+            posX = Math.floor(entity.posX * 32.0D).toInt
+            posY = Math.floor(entity.posY * 32.0D).toInt
+            // val posZ = entity.entitySize.multiplyBy32AndRound(entity.posZ)
+            val posZ = Math.floor(entity.posZ * 32.0D).toInt
+            val rotYaw = Math.floor(entity.rotYaw * 256.0F / 360.0F).toInt
+            val rotPitch = Math.floor(entity.rotPitch * 256.0F / 360.0F).toInt
+            val var7 = posX - lastScaledXPosition
+            val var8 = posY - lastScaledYPosition
+            val var9 = posZ - lastScaledZPosition
             var var10: Packet[_ <: INetHandler] = null
             val var11 = Math.abs(var7) >= 4 || Math.abs(var8) >= 4 || Math.abs(var9) >= 4 || ticks % 60 == 0
-            val var12 = Math.abs(var5 - lastYaw) >= 4 || Math.abs(var6 - lastPitch) >= 4
+            val var12 = Math.abs(rotYaw - lastYaw) >= 4 || Math.abs(rotPitch - lastPitch) >= 4
             if (ticks > 0 /*|| entity.isInstanceOf[EntityArrow]*/ ) {
                 if (var7 >= -128 && var7 < 128 && var8 >= -128 && var8 < 128 && var9 >= -128 && var9 < 128 && ticksSinceLastForcedTeleport <= 400 && !ridingEntity) {
                     if (var11 && var12) {
-                        var10 = new SPacketEntity.SPacketEntityLookMove(entity.id, var7.toByte, var8.toByte, var9.toByte, var5.toByte, var6.toByte)
+                        var10 = new SPacketEntity.SPacketEntityLookMove(entity.id, var7.toByte, var8.toByte, var9.toByte, rotYaw.toByte, rotPitch.toByte)
                     } else if (var11) {
                         var10 = new SPacketEntity.SPacketEntityRelMove(entity.id, var7.toByte, var8.toByte, var9.toByte)
                     } else if (var12) {
-                        var10 = new SPacketEntity.SPacketEntityLook(entity.id, var5.toByte, var6.toByte)
+                        var10 = new SPacketEntity.SPacketEntityLook(entity.id, rotYaw.toByte, rotPitch.toByte)
                     }
                 } else {
                     ticksSinceLastForcedTeleport = 0
-                    var10 = new SPacketEntityTeleport(entity.id, var2, var3, var4, var5.toByte, var6.toByte)
+                    var10 = new SPacketEntityTeleport(entity.id, posX, posY, posZ, rotYaw.toByte, rotPitch.toByte)
                 }
             }
             if (sendVelocityUpdates) {
@@ -250,26 +248,26 @@ class EntityTrackerEntry(val entity: Entity, blocksDistance: Int, updateFrequenc
                 }
             }
             if (var10 != null) sendPacketAllTrackingPlayers(var10)
-            func_111190_b()
+           // func_111190_b()
             if (var11) {
-                lastScaledXPosition = var2
-                lastScaledYPosition = var3
-                lastScaledZPosition = var4
+                lastScaledXPosition = posX
+                lastScaledYPosition = posY
+                lastScaledZPosition = posZ
             }
             if (var12) {
-                lastYaw = var5
-                lastPitch = var6
+                lastYaw = rotYaw
+                lastPitch = rotPitch
             }
             ridingEntity = false
             //}
             //            else {
-            //                var2 = MathHelper.floor_float(entity.rotationYaw * 256.0F / 360.0F)
-            //                var3 = MathHelper.floor_float(entity.rotationPitch * 256.0F / 360.0F)
-            //                val var25 = Math.abs(var2 - lastYaw) >= 4 || Math.abs(var3 - lastPitch) >= 4
+            //                posX = MathHelper.floor_float(entity.rotationYaw * 256.0F / 360.0F)
+            //                posY = MathHelper.floor_float(entity.rotationPitch * 256.0F / 360.0F)
+            //                val var25 = Math.abs(posX - lastYaw) >= 4 || Math.abs(posY - lastPitch) >= 4
             //                if (var25) {
-            //                    func_151259_a(new S14PacketEntity.S16PacketEntityLook(entity.getEntityId, var2.toByte, var3.toByte))
-            //                    lastYaw = var2
-            //                    lastPitch = var3
+            //                    func_151259_a(new S14PacketEntity.S16PacketEntityLook(entity.getEntityId, posX.toByte, posY.toByte))
+            //                    lastYaw = posX
+            //                    lastPitch = posY
             //                }
             //                lastScaledXPosition = entity.entitySize.multiplyBy32AndRound(entity.posX)
             //                lastScaledYPosition = MathHelper.floor_double(entity.posY * 32.0D)
@@ -277,10 +275,10 @@ class EntityTrackerEntry(val entity: Entity, blocksDistance: Int, updateFrequenc
             //                func_111190_b()
             //                ridingEntity = true
             //            }
-            //            var2 = Math.floor(entity.getRotationYawHead * 256.0F / 360.0F)
-            //            if (Math.abs(var2 - lastHeadMotion) >= 4) {
-            //                func_151259_a(new S19PacketEntityHeadLook(entity, var2.toByte))
-            //                lastHeadMotion = var2
+            //            posX = Math.floor(entity.getRotationYawHead * 256.0F / 360.0F)
+            //            if (Math.abs(posX - lastHeadMotion) >= 4) {
+            //                func_151259_a(new S19PacketEntityHeadLook(entity, posX.toByte))
+            //                lastHeadMotion = posX
             //            }
             entity.isAirBorne = false
         }
@@ -307,13 +305,13 @@ class EntityTrackerEntry(val entity: Entity, blocksDistance: Int, updateFrequenc
     }
 
     def informAllAssociatedPlayersOfItemDestruction(): Unit = {
-        trackingPlayers.foreach(_.func_152339_d(entity))
+        trackingPlayers.foreach(_.destroyEntityNetCache(entity))
     }
 
     def removePlayerFromTracker(entityIn:EntityPlayerS):Unit = {
         if (trackingPlayers.contains(entityIn)) {
             trackingPlayers.remove(entityIn)
-            entityIn.func_152339_d(entity)
+            entityIn.destroyEntityNetCache(entity)
         }
     }
 

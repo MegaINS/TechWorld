@@ -2,7 +2,7 @@ package ru.megains.techworld.client.register
 
 import ru.megains.techworld.client.entity.EntityOtherPlayerC
 import ru.megains.techworld.client.renderer.block.{RenderBlockGlass, RenderBlockGrass, RenderBlockLeaves, RenderBlockLog}
-import ru.megains.techworld.client.renderer.entity.RenderEntityCube
+import ru.megains.techworld.client.renderer.entity.RenderEntityPlayer
 import ru.megains.techworld.common.entity.mob.EntityBot
 import ru.megains.techworld.common.register.{Bootstrap => BootstrapCommon}
 import ru.megains.techworld.common.utils.Logger
@@ -53,7 +53,7 @@ object Bootstrap extends Logger {
     def initEntity(): Unit = {
         BootstrapCommon.initEntity(GameRegisterRender)
 
-        GameRegisterRender.registerEntity(0,classOf[EntityOtherPlayerC], RenderEntityCube)
-        GameRegisterRender.registerEntityRender(classOf[EntityBot], RenderEntityCube)
+        GameRegisterRender.registerEntity(0,classOf[EntityOtherPlayerC], RenderEntityPlayer)
+        GameRegisterRender.registerEntityRender(classOf[EntityBot], RenderEntityPlayer)
     }
 }
