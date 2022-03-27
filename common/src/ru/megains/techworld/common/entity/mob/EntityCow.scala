@@ -6,7 +6,7 @@ import ru.megains.techworld.common.world.World
 import scala.util.Random
 
 
-class EntityBot(worldIn: World) extends EntityLivingBase(1.8f, 0.6f, 1.6f) {
+class EntityCow(worldIn: World) extends EntityLivingBase(1.3f, 0.9f, 1.2f) {
 
     world = worldIn
     // rotYaw = (Random.nextFloat() - 0.5f) * 720f

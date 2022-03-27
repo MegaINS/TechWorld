@@ -1,50 +1,88 @@
 package ru.megains.techworld.client.renderer.entity
 
+import org.joml.Matrix4f
 import ru.megains.techworld.client.renderer.mesh.MeshMaker
 import ru.megains.techworld.client.renderer.model.Model
 import ru.megains.techworld.client.renderer.texture.{TTexture, TextureRegion}
 
-class EntityBox(minX: Float, minY: Float, minZ: Float, width: Float, height: Float, depth: Float, texture: TTexture, minU: Float, minV: Float, widthTexture: Float, heightTexture: Float) extends Model {
+class EntityBox(entityModel: EntityModel, originX: Int, originY: Int, originZ: Int, width: Int, height: Int, depth: Int, textureOffsetX: Float, textureOffsetY: Float) extends Model {
+
+    val textureWidth: Float = 64.0F
+    val textureHeight: Float = 32.0F
+    val heightTexture: Float = (height+depth)/textureHeight
+    val widthTexture: Float = ((width+depth)*2)/textureWidth
+    parent = entityModel
+    var offsetX = 0
+    var offsetY = 0
+    var offsetZ = 0
 
 
     def init(): Unit = {
         val mm = MeshMaker.startMakeTriangles()
-        mm.setTexture(texture)
-        val maxX: Float = width + minX
-        val maxY: Float = height + minY
-        val maxZ: Float = depth + minZ
+        mm.setTexture(entityModel.texture)
+
+        val minX: Float = originX.toFloat / 16f
+        val minY: Float = originY.toFloat / 16f
+        val minZ: Float = originZ.toFloat / 16f
 
 
-        val dx = width / (width + depth) / 2
-        val dy = height / (height + depth)
+        val maxX: Float = (width + originX).toFloat / 16f
+        val maxY: Float = (height + originY).toFloat / 16f
+        val maxZ: Float = (depth + originZ).toFloat / 16f
 
-        val dz = depth / (width + depth) / 2
 
+        val dx: Float = (width / (width + depth.toFloat) / 2f)
+        val dy: Float = (height / (height + depth.toFloat))
+        val dz: Float = (depth / (width + depth.toFloat) / 2f)
 
-        val westT = new TextureRegion(texture, minU + (dx + dz) * widthTexture, minV, (minU + (dx + dz * 2) * widthTexture), minV + dy * heightTexture)
+        
+        val textureX = textureOffsetX/textureWidth
+
+        val textureY = textureOffsetY/textureHeight
+        
+
+        val westT = new TextureRegion(entityModel.texture, textureX + (dx + dz) * widthTexture, textureY, (textureX + (dx + dz * 2) * widthTexture), textureY + dy * heightTexture)
         renderSideWest(mm, minX, minY, maxY, minZ, maxZ, westT)
 
-        val eastT = new TextureRegion(texture, minU + 0f * widthTexture, minV, (minU + dz * widthTexture), minV + dy * heightTexture)
+        val eastT = new TextureRegion(entityModel.texture, textureX + 0f * widthTexture, textureY, (textureX + dz * widthTexture), textureY + dy * heightTexture)
         renderSideEast(mm, maxX, minY, maxY, minZ, maxZ, eastT)
 
-        val northT = new TextureRegion(texture, minU + dz * widthTexture, minV, (minU + (dx + dz) * widthTexture), minV + dy * heightTexture)
+        val northT = new TextureRegion(entityModel.texture, textureX + dz * widthTexture, textureY, (textureX + (dx + dz) * widthTexture), textureY + dy * heightTexture)
         renderSideNorth(mm, minX, maxX, minY, maxY, minZ, northT)
 
-        val southT = new TextureRegion(texture, minU + (dx + dz * 2) * widthTexture, minV, (minU + widthTexture), minV + dy * heightTexture)
+        val southT = new TextureRegion(entityModel.texture, textureX + (dx + dz * 2) * widthTexture, textureY, (textureX + widthTexture), textureY + dy * heightTexture)
         renderSideSouth(mm, minX, maxX, minY, maxY, maxZ, southT)
 
 
-        val downT = new TextureRegion(texture, minU + (dx + dz)* widthTexture, minV + dy * heightTexture, (minU + (dz + dx * 2) * widthTexture), minV + heightTexture)
+        val downT = new TextureRegion(entityModel.texture, textureX + (dx + dz) * widthTexture, textureY + dy * heightTexture, (textureX + (dz + dx * 2) * widthTexture), textureY + heightTexture)
         renderSideDown(mm, minX, maxX, minY, minZ, maxZ, downT)
 
-        val upT = new TextureRegion(texture, minU + dz * widthTexture, minV + dy * heightTexture, (minU + (dx + dz) * widthTexture), minV + heightTexture)
+        val upT = new TextureRegion(entityModel.texture, textureX + dz * widthTexture, textureY + dy * heightTexture, (textureX + (dx + dz) * widthTexture), textureY + heightTexture)
         renderSideUp(mm, minX, maxX, maxY, minZ, maxZ, upT)
 
 
         mesh = mm.make()
     }
 
+    override def buildMatrix(): Matrix4f = {
+        matrix.identity
+        // matrix.translate(rotationPoint)
+        matrix.translate(posX, posY, posZ)
+        matrix.translate(offsetX/16f, offsetY/16f, offsetZ/16f)
+        matrix.translate(rotationPoint.x/16f,rotationPoint.y/16f,rotationPoint.z/16f)
+        matrix.rotateXYZ(Math.toRadians(xRot).toFloat, Math.toRadians(yRot).toFloat, Math.toRadians(zRot).toFloat)
+        matrix.translate(-rotationPoint.x/16f,-rotationPoint.y/16f,-rotationPoint.z/16f)
 
+        //matrix.translate(rotationPoint)
+        matrix.scale(scale)
+
+        parent match {
+            case null =>
+                matrix
+            case _ =>
+                parent.buildMatrix().mul(matrix)
+        }
+    }
     def renderSideUp(mm: MeshMaker, minX: Float, maxX: Float, maxY: Float, minZ: Float, maxZ: Float, texture: TTexture): Unit = {
 
         val minU = texture.minU

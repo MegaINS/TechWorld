@@ -1,6 +1,7 @@
 package ru.megains.techworld.server
 
-import ru.megains.techworld.common.entity.mob.EntityBot
+
+import ru.megains.techworld.common.entity.mob.EntityCow
 import ru.megains.techworld.common.network.NetworkManager
 import ru.megains.techworld.common.network.packet.play.server.{SPacketJoinGame, SPacketPlayerPosLook}
 import ru.megains.techworld.server.entity.EntityPlayerS
@@ -35,7 +36,7 @@ class PlayerList(server:TWServer) {
         nethandlerplayserver.sendPacket(new SPacketPlayerPosLook(player.posX,player.posY,player.posZ,player.rotYaw,player.rotPitch))
         player.world = server.world
         playerLoggedIn(player)
-        val entityCube = new EntityBot(server.world)
+        val entityCube = new EntityCow(server.world)
         entityCube.setPosition(player.posX + Random.nextInt(50) - 25, player.posY + Random.nextInt(50), player.posZ + Random.nextInt(50) - 25)
         server.world.spawnEntityInWorld(entityCube)
     }

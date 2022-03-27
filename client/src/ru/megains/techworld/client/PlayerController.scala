@@ -27,7 +27,7 @@ class PlayerController(game: TechWorld, netHandler:NetHandlerPlayClient) {
     def runTickKeyboard(key: Int, action: Int, mods: Int): Unit ={
         if (action == GLFW_PRESS) {
             key match {
-               // case GLFW_KEY_E => gameScene.guiRenderer.openPlayerInventory()
+                case GLFW_KEY_E => game.guiManager.openPlayerInventory()
 
 
                 case GLFW_KEY_ESCAPE =>

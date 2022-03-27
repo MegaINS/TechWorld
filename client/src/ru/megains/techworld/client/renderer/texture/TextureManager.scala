@@ -14,13 +14,16 @@ object TextureManager {
    // val entityTexture: TextureMap = new TextureMap("texture/entity.png")
     val mapTTexture: mutable.HashMap[String, TTexture] = new mutable.HashMap[String, TTexture]
     var currentTexture: TTexture = _
-    val missingTexture = new Texture("textures/missing.png")
-    val baseTexture = new Texture("textures/base.png")
+    val missingTexture: TTexture = TextureManager.getTexture("textures/missing.png")
+    val baseTexture: TTexture =  TextureManager.getTexture("textures/base.png")
 
 
     def init(): Unit = {
         stbi_set_flip_vertically_on_load(true)
         blocksTexture.registerTexture( GameRegisterRender.blockData.idRender.values.toList)
+        blocksTexture.registerTexture( GameRegisterRender.itemData.idRender.values.toList)
+
+        GameRegisterRender.entityData.idRender.values.foreach(_.init())
        // blocksTexture.registerTexture( GameRegisterRender.itemData.idRender.values.toList)
         loadTexture(blocksTexture.name, TextureManager.blocksTexture)
        // entityTexture.registerTexture( GameRegisterRender.entityData.idRender.values.toList)
@@ -28,8 +31,6 @@ object TextureManager {
 
        // loadTexture( entityTexture.name,  entityTexture)
 
-        loadTexture("missing", missingTexture)
-        loadTexture("base", baseTexture)
     }
 
 

@@ -13,12 +13,10 @@ import ru.megains.techworld.client.renderer.{Mouse, RendererGame, RendererWorld,
 import ru.megains.techworld.client.utils.FrameCounter
 import ru.megains.techworld.client.world.WorldClient
 import ru.megains.techworld.common.network.{NetworkManager, PacketProcessHandler}
-import ru.megains.techworld.common.utils.{Logger, Timer}
+import ru.megains.techworld.common.utils.{Logger, RayTraceResult, Timer}
 
 
 class TechWorld(config: Configuration) extends Logger{
-
-
 
 
 
@@ -31,6 +29,8 @@ class TechWorld(config: Configuration) extends Logger{
     val guiManager = new GuiManager(this)
     val packetProcessHandler:PacketProcessHandler = new PacketProcessHandler
 
+
+    var rayTrace:RayTraceResult = RayTraceResult.VOID
     val moved = new Vector3i(0, 0, 0)
     var world:WorldClient = _
     val rendererGame:RendererGame = new RendererGame(this)
@@ -66,7 +66,6 @@ class TechWorld(config: Configuration) extends Logger{
         guiManager.init()
         log.info("Init RendererGame")
         rendererGame.init()
-        GameRegisterRender.entityData.idRender.values.foreach(_.init())
         FrameCounter.start()
         log.info("Start Game")
         guiManager.setScreen(new GuiPlayerSelect)
@@ -181,6 +180,7 @@ class TechWorld(config: Configuration) extends Logger{
             if(player == null){
                 player = playerController.createClientPlayer(world)
             }
+            guiManager.setPlayer(player)
         }else{
             player = null
         }
@@ -201,7 +201,7 @@ class TechWorld(config: Configuration) extends Logger{
 
     def runTickKeyboard(key: Int, action: Int, mods: Int): Unit = {
         if (guiManager.isGuiOpen) {
-           // guiManager.runTickKeyboard(key: Int, action: Int, mods: Int)
+            guiManager.runTickKeyboard(key: Int, action: Int, mods: Int)
         } else {
             playerController.runTickKeyboard(key: Int, action: Int, mods: Int)
         }

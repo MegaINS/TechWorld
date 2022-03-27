@@ -3,8 +3,10 @@ package ru.megains.techworld.client.register
 import ru.megains.techworld.client.renderer.api.{TRenderBlock, TRenderItem, TRenderTileEntity}
 import ru.megains.techworld.client.renderer.block.{RenderBlockStandard, RendererMiniBlock}
 import ru.megains.techworld.client.renderer.entity.TRenderEntity
+import ru.megains.techworld.client.renderer.item.{RenderItemBlock, RenderItemStandart}
 import ru.megains.techworld.common.block.{Block, BlockAir, MiniBlock}
 import ru.megains.techworld.common.entity.Entity
+import ru.megains.techworld.common.item.{Item, ItemBlock}
 import ru.megains.techworld.common.register.GameRegister.entityData
 import ru.megains.techworld.common.register.{GameRegister, RegisterRender, TGameRegister}
 
@@ -38,14 +40,14 @@ object GameRegisterRender extends TGameRegister {
         }
     }
 
-//    def registerItemRender(item: Item, tRenderItem: TRenderItem): Unit = {
-//        val id: Int = GameRegister.getIdByItem(item)
-//        if (id != -1) {
-//            itemData.registerRender(id, tRenderItem)
-//        } else {
-//            println("Block +\"" + item.name + "\" not register")
-//        }
-//    }
+    def registerItemRender(item: Item, tRenderItem: TRenderItem): Unit = {
+        val id: Int = GameRegister.getIdByItem(item)
+        if (id != -1) {
+            itemData.registerRender(id, tRenderItem)
+        } else {
+            println("Block +\"" + item.name + "\" not register")
+        }
+    }
     //    def registerTileEntityRender(tileEntity: Class[_<:TileEntity], aRenderBlock: TRenderTileEntity): Unit = {
     //        val id: Int = CommonGameRegister.getIdByTileEntity(tileEntity)
     //        if (id != -1) {
@@ -77,12 +79,12 @@ object GameRegisterRender extends TGameRegister {
                 case BlockAir =>
                 case _: MiniBlock =>
                     registerBlockRender(block, new RendererMiniBlock(block.name))
-                  //  val item = GameRegister.getItemById(id)
-                   // registerItemRender(item, new RenderItemBlock(item.asInstanceOf[ItemBlock]))
+                    val item = GameRegister.getItemById(id)
+                    registerItemRender(item, new RenderItemBlock(item.asInstanceOf[ItemBlock]))
                 case _ =>
                     registerBlockRender(block, new RenderBlockStandard(block.name))
-                   // val item = GameRegister.getItemById(id)
-                  //  registerItemRender(item, new RenderItemBlock(item.asInstanceOf[ItemBlock]))
+                    val item = GameRegister.getItemById(id)
+                    registerItemRender(item, new RenderItemBlock(item.asInstanceOf[ItemBlock]))
             }
 
 
@@ -103,28 +105,28 @@ object GameRegisterRender extends TGameRegister {
     def registerBlock(id: Int, block: Block, tRenderBlock: TRenderBlock): Unit = {
         if (GameRegister.registerBlock(id, block)) {
             registerBlockRender(block, tRenderBlock)
-          //  val item = GameRegister.getItemById(id)
-           // registerItemRender(item, new RenderItemBlock(item.asInstanceOf[ItemBlock]))
+            val item = GameRegister.getItemById(id)
+            registerItemRender(item, new RenderItemBlock(item.asInstanceOf[ItemBlock]))
         }
     }
 
-//    def registerItem(id: Int, item: Item): Boolean = {
-//        if (GameRegister.registerItem(id, item)) {
-//            registerItemRender(item, new RenderItemStandart(item))
-//            true
-//        } else {
-//            false
-//        }
-//    }
+    def registerItem(id: Int, item: Item): Boolean = {
+        if (GameRegister.registerItem(id, item)) {
+            registerItemRender(item, new RenderItemStandart(item))
+            true
+        } else {
+            false
+        }
+    }
 
-//    def registerItem(id: Int, item: Item, tRenderItem: TRenderItem): Boolean = {
-//        if (GameRegister.registerItem(id, item)) {
-//            registerItemRender(item, tRenderItem)
-//            true
-//        } else {
-//            false
-//        }
-//    }
+    def registerItem(id: Int, item: Item, tRenderItem: TRenderItem): Boolean = {
+        if (GameRegister.registerItem(id, item)) {
+            registerItemRender(item, tRenderItem)
+            true
+        } else {
+            false
+        }
+    }
 
     //
     //    def registerTileEntity(id: Int, tileEntity: Class[_<:TileEntity],tRenderTileEntity: TRenderTileEntity): Unit = {
@@ -145,7 +147,7 @@ object GameRegisterRender extends TGameRegister {
         blockData.getRender(GameRegister.getIdByBlock(block))
     }
 
-   // def getItemRender(item: Item): TRenderItem = itemData.getRender(GameRegister.getIdByItem(item))
+    def getItemRender(item: Item): TRenderItem = itemData.getRender(GameRegister.getIdByItem(item))
 
     // def getTileEntityRender(tileEntity: TileEntity): TRenderTileEntity = tileEntityData.getRender(CommonGameRegister.getIdByTileEntity(tileEntity.getClass))
      def getEntityRender(entity: Entity): TRenderEntity = entityData.getRender(GameRegister.getIdByEntity(entity.getClass))

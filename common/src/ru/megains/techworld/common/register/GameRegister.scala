@@ -2,6 +2,7 @@ package ru.megains.techworld.common.register
 
 import ru.megains.techworld.common.block.{Block, BlockAir}
 import ru.megains.techworld.common.entity.Entity
+import ru.megains.techworld.common.item.{Item, ItemBlock}
 import ru.megains.techworld.common.utils.Logger
 
 
@@ -9,7 +10,7 @@ object GameRegister extends TGameRegister with Logger{
 
     val blockData = new RegisterNamespace[Block]
 
-  //  val itemData = new RegisterNamespace[Item]
+    val itemData = new RegisterNamespace[Item]
 
    // val tileEntityData = new RegisterNamespace[Class[_<:TileEntity]]
 
@@ -40,11 +41,11 @@ object GameRegister extends TGameRegister with Logger{
 
     def getBlockByName(name: String): Block = blockData.getObject(name)
 
-   // def getIdByItem(item: Item): Int = itemData.getIdByObject(item)
+    def getIdByItem(item: Item): Int = itemData.getIdByObject(item)
 
-   // def getItemById(id: Int): Item = itemData.getObject(id)
+    def getItemById(id: Int): Item = itemData.getObject(id)
 
-   // def getItemFromBlock(block: Block): Item = itemData.getObject(blockData.getIdByObject(block))
+    def getItemFromBlock(block: Block): Item = itemData.getObject(blockData.getIdByObject(block))
 
     def getIdByBlockName(name: String): Int = blockData.getIdByName(name)
 
@@ -64,7 +65,7 @@ object GameRegister extends TGameRegister with Logger{
                         case BlockAir =>
 
                         case _ =>
-                           // registerItem(id, new ItemBlock(block))
+                            registerItem(id, new ItemBlock(block))
                     }
 
                     return true
@@ -76,24 +77,24 @@ object GameRegister extends TGameRegister with Logger{
 
 
 
-//    def registerItem(id: Int, item: Item): Boolean = {
-//        if (itemData.contains(item)) {
-//            println("Item \"" + item.name + "\" already register")
-//        } else {
-//            if (itemData.contains(id)) {
-//                println("Id \"" + id + "\" not single")
-//            } else {
-//                if (itemData.contains(item.name)) {
-//                    println("Name \"" + item.name + "\" not single")
-//                } else {
-//                    itemData.registerObject(id, item.name, item)
-//
-//                    return true
-//                }
-//            }
-//        }
-//        false
-//    }
+    def registerItem(id: Int, item: Item): Boolean = {
+        if (itemData.contains(item)) {
+            println("Item \"" + item.name + "\" already register")
+        } else {
+            if (itemData.contains(id)) {
+                println("Id \"" + id + "\" not single")
+            } else {
+                if (itemData.contains(item.name)) {
+                    println("Name \"" + item.name + "\" not single")
+                } else {
+                    itemData.registerObject(id, item.name, item)
+
+                    return true
+                }
+            }
+        }
+        false
+    }
 //    def registerTileEntity(id: Int, tileEntity: Class[_<:TileEntity]): Boolean = {
 //        if (tileEntityData.contains(tileEntity)) {
 //            println("TileEntity \"" + tileEntity.toString + "\" already register")
@@ -130,7 +131,7 @@ object GameRegister extends TGameRegister with Logger{
     }
 
     def getBlocks: Iterable[Block] = blockData.getObjects
-   // def getItems: Iterable[Item] = itemData.getObjects
+    def getItems: Iterable[Item] = itemData.getObjects
     //def getTileEntities: Iterable[Class[_ <: TileEntity]] = tileEntityData.getObjects
     def getEntities: Iterable[Class[_ <: Entity]] = entityData.getObjects
 

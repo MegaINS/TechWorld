@@ -1,7 +1,7 @@
 package ru.megains.techworld.common.register
 
 import ru.megains.techworld.common.block.{Block, BlockAir, BlockGlass}
-import ru.megains.techworld.common.entity.mob.EntityBot
+import ru.megains.techworld.common.entity.mob.EntityCow
 import ru.megains.techworld.common.utils.Logger
 
 object Bootstrap extends Logger {
@@ -55,7 +55,7 @@ object Bootstrap extends Logger {
 
     def initEntity(gameRegister: TGameRegister): Unit = {
       //  gameRegister.registerEntity(0, classOf[EntityItem])
-        gameRegister.registerEntity(1, classOf[EntityBot])
+        gameRegister.registerEntity(1, classOf[EntityCow])
 
 
     }

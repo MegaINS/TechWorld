@@ -3,7 +3,11 @@ package ru.megains.techworld.client.entity
 import ru.megains.techworld.client.network.handler.NetHandlerPlayClient
 import ru.megains.techworld.client.renderer.world.ChunkRenderer.game
 import ru.megains.techworld.common.entity.{Entity, EntityPlayer}
+import ru.megains.techworld.common.item.itemstack.ItemStack
 import ru.megains.techworld.common.network.packet.play.client.CPacketPlayer
+import ru.megains.techworld.common.register.GameRegister
+
+import scala.util.Random
 
 class EntityPlayerC() extends EntityPlayer{
     private var lastReportedPosX: Double = .0
@@ -15,7 +19,7 @@ class EntityPlayerC() extends EntityPlayer{
     private var prevOnGround: Boolean = false
     var connection: NetHandlerPlayClient =_
 
-
+    GameRegister.getItems.foreach(i => inventory.addItemStackToInventory(new ItemStack(i, Random.nextInt(100))))
     def update(y: Int): Unit = {
 
 
