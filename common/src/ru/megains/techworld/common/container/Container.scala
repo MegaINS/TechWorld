@@ -114,22 +114,22 @@ abstract class Container {
 
     def getSlotAtPosition(x: Int, y: Int): Slot = inventorySlots.find(isMouseOverSlot(_, x, y)).orNull
 
-//    //todo delete server
-//    val listeners: ArrayBuffer[EntityPlayerMP] = ArrayBuffer[EntityPlayerMP]()
-//    def addListener(listener: EntityPlayerMP) {
-//        if (listeners.contains(listener)) throw new IllegalArgumentException("Listener already listening")
-//        else {
-//            listeners += listener
-//            listener.updateCraftingInventory(this, getInventory)
-//            detectAndSendChanges()
-//        }
-//    }
-//    def detectAndSendChanges() {
-//
-//        for (i <- inventorySlots.indices) {
-//            val itemStack = inventorySlots(i).getStack
-//            listeners.foreach(_.sendSlotContents(this, i, itemStack))
-//        }
-//
-//    }
+    //todo delete server
+    val listeners: ArrayBuffer[InventoryListener] = ArrayBuffer[InventoryListener]()
+    def addListener(listener: InventoryListener): Unit = {
+        if (listeners.contains(listener)) throw new IllegalArgumentException("Listener already listening")
+        else {
+            listeners += listener
+            listener.updateCraftingInventory(this, getInventory)
+            detectAndSendChanges()
+        }
+    }
+    def detectAndSendChanges(): Unit = {
+
+        for (i <- inventorySlots.indices) {
+            val itemStack = inventorySlots(i).getStack
+            listeners.foreach(_.sendSlotContents(this, i, itemStack))
+        }
+
+    }
 }

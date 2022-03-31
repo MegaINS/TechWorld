@@ -1,6 +1,11 @@
 package ru.megains.techworld.common.item.itemstack
 
+import ru.megains.techworld.common.block.BlockState
+import ru.megains.techworld.common.entity.EntityPlayer
 import ru.megains.techworld.common.item.{Item, ItemType}
+import ru.megains.techworld.common.utils.Direction
+import ru.megains.techworld.common.utils.EnumActionResult.EnumActionResult
+import ru.megains.techworld.common.world.World
 
 
 class ItemStack private(val item: Item, var stackSize:Int, var stackMass:Int) {
@@ -39,11 +44,11 @@ class ItemStack private(val item: Item, var stackSize:Int, var stackMass:Int) {
         }
     }
 
-//    def onItemUse(playerIn: EntityPlayer, worldIn: World, pos: BlockState, side: BlockDirection, hitX: Float, hitY: Float, hitZ: Float): EnumActionResult = {
-//
-//        val enumactionresult: EnumActionResult = item.onItemUse(this, playerIn, worldIn, pos, side, hitX, hitY, hitZ)
-//        enumactionresult
-//    }
+    def onItemUse(playerIn: EntityPlayer, worldIn: World, pos: BlockState, side: Direction, hitX: Float, hitY: Float, hitZ: Float): EnumActionResult = {
+
+        val enumactionresult: EnumActionResult = item.onItemUse(this, playerIn, worldIn, pos, side, hitX, hitY, hitZ)
+        enumactionresult
+    }
 
 
     def canEqual(other: Any): Boolean = other.isInstanceOf[ItemStack]

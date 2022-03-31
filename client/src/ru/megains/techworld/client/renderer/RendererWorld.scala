@@ -99,9 +99,9 @@ class RendererWorld(world: WorldClient) {
 
     def reRender(pos: ChunkPosition): Unit = {
         //TODO
-        val x: Int = pos.x >> Chunk.offset
-        val y: Int = pos.y >> Chunk.offset
-        val z: Int = pos.z >> Chunk.offset
+        val x: Int = pos.x //>> Chunk.offset
+        val y: Int = pos.y// >> Chunk.offset
+        val z: Int = pos.z// >> Chunk.offset
         getRenderChunk(x, y, z).reRender()
         getRenderChunk(x + 1, y, z).reRender()
         getRenderChunk(x - 1, y, z).reRender()
@@ -110,7 +110,9 @@ class RendererWorld(world: WorldClient) {
         getRenderChunk(x, y, z + 1).reRender()
         getRenderChunk(x, y, z - 1).reRender()
     }
-
+    def reRender(x: Int, y: Int, z: Int): Unit = {
+        reRender(ChunkPosition( x >> Chunk.offset, y >> Chunk.offset,  z >> Chunk.offset))
+    }
     def unload(pos: ChunkPosition): Unit ={
         chunkRenderer.get(Chunk.getIndex(pos)) match {
             case Some(value) =>

@@ -17,7 +17,7 @@ class EntityCow(worldIn: World) extends EntityLivingBase(1.3f, 0.9f, 1.2f) {
 
 
     override def update(): Unit = {
-
+        super.update()
 
         x += 1
         if (x % t == 0) {

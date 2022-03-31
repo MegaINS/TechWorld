@@ -7,6 +7,7 @@ import ru.megains.techworld.client.renderer.gui.{Gui, GuiScreen, GuiSlot}
 import ru.megains.techworld.client.renderer.model.Model
 import ru.megains.techworld.client.renderer.shader.data.Shader
 import ru.megains.techworld.common.container.Container
+import ru.megains.techworld.common.entity.EntityPlayer
 import ru.megains.techworld.common.inventory.Slot
 import ru.megains.techworld.common.item.itemstack.ItemStack
 
@@ -69,7 +70,7 @@ abstract class GuiContainer(val inventorySlots: Container) extends GuiScreen {
     override def mousePress(x: Int, y: Int, button: Int): Unit = {
         inventorySlots.mouseClicked(x-posX.toInt,y-posY.toInt,button,game.player)
        // player.openContainer.mouseClicked(x-posX, y-posY, button, player)
-       // tar.playerController.windowClick(x-posX, y-posY, button, player: EntityPlayer)
+        game.playerController.windowClick(x-posX.toInt, y-posY.toInt, button, game.player)
     }
 
     def getSlotAtPosition(x: Int, y: Int): Slot = inventorySlots.inventorySlots.find(inventorySlots.isMouseOverSlot(_, x, y)).orNull

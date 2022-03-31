@@ -11,9 +11,12 @@ import ru.megains.techworld.client.renderer.texture.TextureManager
 import ru.megains.techworld.client.renderer.world.ChunkRenderer
 import ru.megains.techworld.client.renderer.{Mouse, RendererGame, RendererWorld, Window}
 import ru.megains.techworld.client.utils.FrameCounter
-import ru.megains.techworld.client.world.WorldClient
+import ru.megains.techworld.client.world.{ClientWorldEventHandler, WorldClient}
+import ru.megains.techworld.common.block.BlockState
+import ru.megains.techworld.common.item.ItemBlock
+import ru.megains.techworld.common.item.itemstack.ItemStack
 import ru.megains.techworld.common.network.{NetworkManager, PacketProcessHandler}
-import ru.megains.techworld.common.utils.{Logger, RayTraceResult, Timer}
+import ru.megains.techworld.common.utils.{Logger, RayTraceResult, RayTraceType, Timer}
 
 
 class TechWorld(config: Configuration) extends Logger{
@@ -29,8 +32,9 @@ class TechWorld(config: Configuration) extends Logger{
     val guiManager = new GuiManager(this)
     val packetProcessHandler:PacketProcessHandler = new PacketProcessHandler
 
-
+    var blockSetPosition: BlockState = _
     var rayTrace:RayTraceResult = RayTraceResult.VOID
+
     val moved = new Vector3i(0, 0, 0)
     var world:WorldClient = _
     val rendererGame:RendererGame = new RendererGame(this)
@@ -75,7 +79,7 @@ class TechWorld(config: Configuration) extends Logger{
     def render(): Unit = {
         guiManager.render()
         window.update()
-        Mouse.update()
+
 
         if(world!= null) rendererGame.render()
         FrameCounter.gameRender()
@@ -97,7 +101,7 @@ class TechWorld(config: Configuration) extends Logger{
                 if (glfwGetKey(window.id, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) moved.add(0, -1, 0)
                 if (glfwGetKey(window.id, GLFW_KEY_SPACE) == GLFW_PRESS) moved.add(0, 1, 0)
 
-                //  player.inventory.changeStackSelect(Mouse.getDWheel * -1)
+                player.inventory.changeStackSelect(Mouse.getDWheel * -1)
 
                 player.moveForward = moved.z
                 player.moveStrafing = moved.x
@@ -106,7 +110,18 @@ class TechWorld(config: Configuration) extends Logger{
                 player.turn(Mouse.getDX.toFloat,-Mouse.getDY.toFloat)
                 player.update(moved.y)
             }
+            rayTrace = player.rayTrace(5)
 
+            if (rayTrace.traceType == RayTraceType.BLOCK) {
+
+                val stack: ItemStack = player.inventory.getStackSelect
+                if (stack != null) {
+                    blockSetPosition = stack.item match {
+                        case itemBlock: ItemBlock => itemBlock.block.getSelectPosition(world, player, rayTrace)
+                        case _ => null
+                    }
+                } else blockSetPosition = null
+            } else blockSetPosition = null
 
 
             rendererGame.update()
@@ -115,6 +130,7 @@ class TechWorld(config: Configuration) extends Logger{
 
         guiManager.update()
         FrameCounter.gameUpdate()
+        Mouse.update()
         while (FrameCounter.isTimePassed(1000)) {
 
 
@@ -177,6 +193,7 @@ class TechWorld(config: Configuration) extends Logger{
         world = newWorld
 
         if(newWorld!= null){
+            newWorld.addEventListener(new ClientWorldEventHandler(this, newWorld))
             if(player == null){
                 player = playerController.createClientPlayer(world)
             }

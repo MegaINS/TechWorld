@@ -5,23 +5,34 @@ import ru.megains.techworld.common.entity.Entity
 
 import scala.collection.mutable.ArrayBuffer
 
-class Chunk(val pos: ChunkPosition,val world: World) {
+class Chunk(val pos: ChunkPosition, val world: World) {
 
+    val entityLists = new ArrayBuffer[Entity]()
     var blockStorage = new BlockStorage(pos)
     var isEmpty: Boolean = true
     var isPopulated = true
     var hasEntities = false
 
-    def getBlock(x: Int, y: Int, z: Int):BlockState = {
-        blockStorage.getBlock(x & (Chunk.blockSize-1), y & (Chunk.blockSize-1), z & (Chunk.blockSize-1))
+    def getBlock(x: Int, y: Int, z: Int): BlockState = {
+        blockStorage.getBlock(x & (Chunk.blockSize - 1), y & (Chunk.blockSize - 1), z & (Chunk.blockSize - 1))
     }
 
-    def getBlockByLocPos(x: Int, y: Int, z: Int):BlockState ={
+    def getBlockByLocPos(x: Int, y: Int, z: Int): BlockState = {
         blockStorage.getBlock(x, y, z)
     }
 
+    def removeBlock(blockState: BlockState): Unit = {
+        blockStorage.removeBlock(blockState)
+    }
 
-    val entityLists = new ArrayBuffer[Entity]()
+    def setBlock(blockState: BlockState): Unit = {
+        isEmpty = false
+        blockStorage.setBlock(blockState)
+    }
+
+    def isAirBlock(blockState: BlockState): Boolean = {
+        blockStorage.isAirBlock(blockState: BlockState)
+    }
 
     def addEntity(entity: Entity): Unit = {
         hasEntities = true
@@ -53,5 +64,6 @@ object Chunk {
     }
 
     def getIndex(x: Long, y: Long, z: Long): Long = (x & 16777215L) << 40 | (z & 16777215L) << 16 | (y & 65535L)
-    def getIndex(pos:ChunkPosition): Long = getIndex(pos.x,pos.y, pos.z)
+
+    def getIndex(pos: ChunkPosition): Long = getIndex(pos.x, pos.y, pos.z)
 }

@@ -18,7 +18,8 @@ class PlayerList(server:TWServer) {
     val playerEntityList: ArrayBuffer[EntityPlayerS] = new ArrayBuffer[EntityPlayerS]()
 
     def createPlayerForUser(name: String): EntityPlayerS = {
-        nameToPlayerMap += name ->  new EntityPlayerS(name)
+        val playerinteractionmanager: PlayerInteractionManager = new PlayerInteractionManager(server.world)
+        nameToPlayerMap += name ->  new EntityPlayerS(name,playerinteractionmanager)
         getPlayerByName(name)
 
     }
@@ -39,6 +40,7 @@ class PlayerList(server:TWServer) {
         val entityCube = new EntityCow(server.world)
         entityCube.setPosition(player.posX + Random.nextInt(50) - 25, player.posY + Random.nextInt(50), player.posZ + Random.nextInt(50) - 25)
         server.world.spawnEntityInWorld(entityCube)
+        player.addSelfToInternalCraftingInventory()
     }
 
     def playerLoggedIn(playerIn: EntityPlayerS): Unit = {

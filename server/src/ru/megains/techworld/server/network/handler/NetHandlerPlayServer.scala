@@ -1,11 +1,13 @@
 package ru.megains.techworld.server.network.handler
 
 import com.sun.javafx.geom.Vec3f
+import ru.megains.techworld.common.block.BlockPos
+import ru.megains.techworld.common.inventory.InventoryPlayer
 import ru.megains.techworld.common.network.NetworkManager
 import ru.megains.techworld.common.network.handler.{INetHandler, INetHandlerPlayServer}
 import ru.megains.techworld.common.network.packet.Packet
-import ru.megains.techworld.common.network.packet.play.client.CPacketPlayer
-import ru.megains.techworld.common.utils.Logger
+import ru.megains.techworld.common.network.packet.play.client.{CPacketClickWindow, CPacketHeldItemChange, CPacketPlayer, CPacketPlayerMouse}
+import ru.megains.techworld.common.utils.{Logger, RayTraceType}
 import ru.megains.techworld.server.TWServer
 import ru.megains.techworld.server.entity.EntityPlayerS
 
@@ -115,65 +117,62 @@ class NetHandlerPlayServer(server: TWServer, val networkManager: NetworkManager,
         lastGoodZ = playerEntity.posZ
 
     }
-//
-//
-//    override def processHeldItemChange(packetIn: CPacketHeldItemChange): Unit = {
-//        if (packetIn.slotId >= 0 && packetIn.slotId < InventoryPlayer.hotBarSize) {
-//            playerEntity.inventory.stackSelect = packetIn.slotId
-//
-//        }
-//        else log.warn("{} tried to set an invalid carried item", Array[AnyRef](playerEntity.name))
-//    }
-//
-//
-//
-//    override def processClickWindow(packetIn: CPacketClickWindow): Unit = {
-//        playerEntity.openContainer.mouseClicked(packetIn.mouseX, packetIn.mouseY, packetIn.button, playerEntity)
-//        playerEntity.updateHeldItem()
-//    }
+
+
+    override def processHeldItemChange(packetIn: CPacketHeldItemChange): Unit = {
+        if (packetIn.slotId >= 0 && packetIn.slotId < InventoryPlayer.hotBarSize) {
+            playerEntity.inventory.stackSelect = packetIn.slotId
+
+        }
+        else log.warn("{} tried to set an invalid carried item", Array[AnyRef](playerEntity.name))
+    }
 
 
 
-//    override def processPlayerMouse(packetIn: CPacketPlayerMouse): Unit = {
-//        packetIn.button match {
-//            case 0 =>
-//
-//
-//
-//              packetIn.rayTraceResult.traceType match {
-//                    case RayTraceType.BLOCK  =>
-//                        val blockPos: BlockPos = new BlockPos(packetIn.rayTraceResult.blockState.x,packetIn.rayTraceResult.blockState.y,packetIn.rayTraceResult.blockState.z)
-//
-//                        val d0: Double = playerEntity.posX - (blockPos.x.toDouble + 0.5D)
-//                        val d1: Double = playerEntity.posY - (blockPos.y.toDouble + 0.5D) + 1.5D
-//                        val d2: Double = playerEntity.posZ - (blockPos.z.toDouble + 0.5D)
-//                        val d3: Double = d0 * d0 + d1 * d1 + d2 * d2
-//                        var dist: Double = playerEntity.interactionManager.getBlockReachDistance + 1
-//                        dist *= dist
-//                        if (d3 > dist) {
-//
-//                        } else {
-//                            playerEntity.interactionManager.onBlockClicked(blockPos, packetIn.rayTraceResult.sideHit)
-//                        }
-//                    case RayTraceType.VOID  =>
-//                    case RayTraceType.ENTITY  =>
-//                }
-//
-//            case 1 =>
-//
-//
-//                packetIn.rayTraceResult.traceType match {
-//                    case RayTraceType.VOID  =>
-//                    case RayTraceType.BLOCK  =>
-//
-//                       playerEntity.interactionManager.processRightClickBlock(packetIn.rayTraceResult,packetIn.blockState)
-//
-//                    case RayTraceType.ENTITY  =>
-//                }
-//            case _=> log.info(s"${playerEntity.name} click mouse button ${packetIn.button}")
-//        }
-//    }
-//
+    override def processClickWindow(packetIn: CPacketClickWindow): Unit = {
+        playerEntity.openContainer.mouseClicked(packetIn.mouseX, packetIn.mouseY, packetIn.button, playerEntity)
+        playerEntity.updateHeldItem()
+    }
+
+
+
+    override def processPlayerMouse(packetIn: CPacketPlayerMouse): Unit = {
+        packetIn.button match {
+            case 0 =>
+              packetIn.rayTraceResult.traceType match {
+                    case RayTraceType.BLOCK  =>
+                        val blockPos: BlockPos = new BlockPos(packetIn.rayTraceResult.blockState.x,packetIn.rayTraceResult.blockState.y,packetIn.rayTraceResult.blockState.z)
+
+                        val d0: Double = playerEntity.posX - (blockPos.x.toDouble + 0.5D)
+                        val d1: Double = playerEntity.posY - (blockPos.y.toDouble + 0.5D) + 1.5D
+                        val d2: Double = playerEntity.posZ - (blockPos.z.toDouble + 0.5D)
+                        val d3: Double = d0 * d0 + d1 * d1 + d2 * d2
+                        var dist: Double = playerEntity.interactionManager.getBlockReachDistance + 1
+                        dist *= dist
+                        if (d3 > dist) {
+
+                        } else {
+                            playerEntity.interactionManager.onBlockClicked(blockPos, packetIn.rayTraceResult.sideHit)
+                        }
+                    case RayTraceType.VOID  =>
+                    case RayTraceType.ENTITY  =>
+                }
+
+            case 1 =>
+
+
+                packetIn.rayTraceResult.traceType match {
+                    case RayTraceType.VOID  =>
+                    case RayTraceType.BLOCK  =>
+
+                       playerEntity.interactionManager.processRightClickBlock(packetIn.rayTraceResult,packetIn.blockState)
+
+                    case RayTraceType.ENTITY  =>
+                }
+            case _=> log.info(s"${playerEntity.name} click mouse button ${packetIn.button}")
+        }
+    }
+
 //    override def processCloseWindow(packetIn: CPacketCloseWindow): Unit = {
 //        playerEntity.closeContainer()
 //    }

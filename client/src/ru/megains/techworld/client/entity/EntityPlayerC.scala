@@ -19,7 +19,7 @@ class EntityPlayerC() extends EntityPlayer{
     private var prevOnGround: Boolean = false
     var connection: NetHandlerPlayClient =_
 
-    GameRegister.getItems.foreach(i => inventory.addItemStackToInventory(new ItemStack(i, Random.nextInt(100))))
+
     def update(y: Int): Unit = {
 
 

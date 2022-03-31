@@ -1,29 +1,17 @@
 package ru.megains.techworld.common.entity
 
+import org.joml.Vector3d
 import ru.megains.techworld.common.physics.BoundingBox
+import ru.megains.techworld.common.utils.{Direction, RayTraceResult}
 import ru.megains.techworld.common.world.World
 
 import scala.collection.mutable
 
-abstract class Entity(wight: Float, height: Float) {
-
-    def isEntityAlive: Boolean = !isDead
-    var isDead = false
-
-    def setDead(): Unit = {
-        isDead = true
-    }
+abstract class Entity(wight: Float, height: Float,val levelView:Float) {
 
 
-    def update(): Unit ={
+    var side:Direction = Direction.NONE
 
-    }
-
-    def setVelocity(motionXIn: Float, motionYIn: Float, motionZIn: Float): Unit = {
-        motionX = motionXIn
-        motionY = motionYIn
-        motionZ = motionZIn
-    }
 
 
     var id: Int = Entity.nextId
@@ -68,6 +56,38 @@ abstract class Entity(wight: Float, height: Float) {
 
 
     val body: BoundingBox = new BoundingBox(-wight / 2, 0, -wight / 2, wight / 2, height, wight / 2)
+
+
+
+
+
+
+
+    def isEntityAlive: Boolean = !isDead
+    var isDead = false
+
+    def setDead(): Unit = {
+        isDead = true
+    }
+
+
+    def update(): Unit ={
+        rotYaw match {
+            case y if y > 315 || y <45 => side = Direction.NORTH
+            case y if y <135 => side = Direction.EAST
+            case y if y <225 => side = Direction.SOUTH
+            case y if y <315 => side = Direction.WEST
+            case _ => side = Direction.UP
+        }
+    }
+
+    def setVelocity(motionXIn: Float, motionYIn: Float, motionZIn: Float): Unit = {
+        motionX = motionXIn
+        motionY = motionYIn
+        motionZ = motionZIn
+    }
+
+
 
     def setPositionAndRotation(x: Float, y: Float, z: Float, yaw: Float, pitch: Float): Unit = {
         prevPosX = x
@@ -230,6 +250,25 @@ abstract class Entity(wight: Float, height: Float) {
         dX * dX + dY * dY + dZ * dZ
     }
 
+    def rayTrace(blockDistance: Int): RayTraceResult = {
+        val pos = new Vector3d(posX,posY+levelView,posZ)
+        val lockVec: Vector3d = getLook.mul(blockDistance)
+        world.rayTraceBlocks(pos,lockVec)
+    }
+
+    def getLook: Vector3d = {
+        getVectorForRotation(rotPitch, rotYaw)
+    }
+
+    def getVectorForRotation(pitch : Float, yaw : Float):Vector3d = {
+
+        val sinPitch:Float = Math.sin(pitch.toRadians).toFloat
+        val cosPitch:Float = Math.cos(pitch.toRadians).toFloat
+        val cosYaw : Float = Math.cos(yaw.toRadians- Math.PI ).toFloat
+        val sinYaw : Float = Math.sin(yaw.toRadians).toFloat
+        new Vector3d(sinYaw*cosPitch, sinPitch, cosYaw*cosPitch)
+
+    }
 
     def canEqual(other: Any): Boolean = other.isInstanceOf[Entity]
 

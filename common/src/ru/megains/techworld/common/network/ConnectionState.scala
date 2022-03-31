@@ -9,8 +9,8 @@ import ru.megains.techworld.common.network.packet.download.server.{SPacketDownlo
 import ru.megains.techworld.common.network.packet.handshake.client.CHandshake
 import ru.megains.techworld.common.network.packet.login.client.CPacketLoginStart
 import ru.megains.techworld.common.network.packet.login.server.SPacketLoginSuccess
-import ru.megains.techworld.common.network.packet.play.client.CPacketPlayer
-import ru.megains.techworld.common.network.packet.play.server.{SPacketChunkData, SPacketDestroyEntities, SPacketEntity, SPacketEntityTeleport, SPacketEntityVelocity, SPacketJoinGame, SPacketMobSpawn, SPacketPlayerPosLook, SPacketSpawnPlayer, SPacketUnloadChunk}
+import ru.megains.techworld.common.network.packet.play.client.{CPacketClickWindow, CPacketHeldItemChange, CPacketPlayer, CPacketPlayerMouse}
+import ru.megains.techworld.common.network.packet.play.server.{SPacketBlockChange, SPacketChunkData, SPacketDestroyEntities, SPacketEntity, SPacketEntityTeleport, SPacketEntityVelocity, SPacketJoinGame, SPacketMobSpawn, SPacketMultiBlockChange, SPacketPlayerPosLook, SPacketSetSlot, SPacketSpawnPlayer, SPacketUnloadChunk, SPacketWindowItems}
 import ru.megains.techworld.common.network.packet.status.client.{CPacketPing, CPacketServerQuery}
 import ru.megains.techworld.common.network.packet.status.server.{SPacketPong, SPacketServerInfo}
 
@@ -97,12 +97,18 @@ object ConnectionState {
         registerPacket(classOf[SPacketEntity.SPacketEntityLook])
         registerPacket(classOf[SPacketEntity.SPacketEntityLookMove])
         registerPacket(classOf[SPacketDestroyEntities])
-
+        registerPacket(classOf[SPacketWindowItems])
+        registerPacket(classOf[SPacketSetSlot])
+        registerPacket(classOf[SPacketBlockChange])
+        registerPacket(classOf[SPacketMultiBlockChange])
 
         registerPacket( classOf[CPacketPlayer])
         registerPacket( classOf[CPacketPlayer.Position])
         registerPacket( classOf[CPacketPlayer.Rotation])
         registerPacket( classOf[CPacketPlayer.PositionRotation])
+        registerPacket( classOf[CPacketHeldItemChange])
+        registerPacket( classOf[CPacketPlayerMouse])
+        registerPacket(classOf[CPacketClickWindow])
     }
 
 

@@ -4,6 +4,14 @@ package ru.megains.techworld.common.network.packet;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.util.ByteProcessor;
+import ru.megains.techworld.common.block.BlockPos;
+import ru.megains.techworld.common.block.BlockState;
+import ru.megains.techworld.common.item.Item;
+import ru.megains.techworld.common.item.ItemPack;
+import ru.megains.techworld.common.item.ItemType;
+import ru.megains.techworld.common.item.itemstack.ItemStack;
+import ru.megains.techworld.common.register.Blocks;
+import ru.megains.techworld.common.utils.Direction;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,82 +32,82 @@ abstract public class PacketBuffer extends ByteBuf {
 
 
 
-//    public void writeBlockPos(BlockPos pos) {
-//        writeInt(pos.x());
-//        writeInt(pos.y());
-//        writeInt(pos.z());
-//    }
+    public void writeBlockPos(BlockState pos) {
+        writeInt(pos.x());
+        writeInt(pos.y());
+        writeInt(pos.z());
+    }
 
-//    public void writeItemPackToBuffer(ItemPack itemStack) throws IOException {
-//        if (itemStack == null) {
-//            writeInt(-1);
-//        } else {
-//            writeInt(Item.getIdFromItem(itemStack.item()));
-//            if(itemStack.item().itemType() != ItemType.MASS()){
-//                writeInt(itemStack.stackSize());
-//            }else{
-//                writeInt(itemStack.stackMass());
-//            }
-//
-//
-//            /*
-//              writeShort(itemStack.getItemDamage());
-//               NBTTagCompound var2 = null;
-//
-//            if (itemStack.getItem().isDamageable() || itemStack.getItem().getShareTag())
-//            {
-//                var2 = itemStack.stackTagCompound;
-//            }
-//
-//             this.writeNBTTagCompoundToBuffer(var2);
-//            */
-//        }
-//    }
+    public void writeItemStackToBuffer(ItemStack itemStack) throws IOException {
+        if (itemStack == null) {
+            writeInt(-1);
+        } else {
+            writeInt(Item.getIdFromItem(itemStack.item()));
+            if(itemStack.item().itemType() != ItemType.MASS()){
+                writeInt(itemStack.stackSize());
+            }else{
+                writeInt(itemStack.stackMass());
+            }
 
-//    public ItemPack readItemPackFromBuffer() throws IOException {
-//        ItemPack var1 = null;
-//        int id = readInt();
-//
-//        if (id >= 0) {
-//            int sizeOrMass = this.readInt();
-//
-//            var1 = new ItemPack(Item.getItemById(id), sizeOrMass);
-//            //  var1.stackTagCompound = this.readNBTTagCompoundFromBuffer();
-//        }
-//
-//        return var1;
-//    }
-//    public void writeBlockState(BlockState blockState) throws IOException {
-//        if (blockState == null) {
-//            writeInt(-1);
-//        } else {
-//            writeInt(Blocks.getIdByBlock( blockState.block()));
-//            writeBlockPos(blockState.pos());
-//            writeByte(blockState.blockDirection().id());
-//
-//        }
-//    }
-//
-//
-//    public BlockState readBlockState() throws IOException {
-//        BlockState var1 = null;
-//        int id = readInt();
-//
-//        if (id >= 0) {
-//           var1 = new BlockState( Blocks.getBlockById(id),readBlockPos(), Direction.DIRECTIONAL_BY_ID()[readByte()]);
-//        }
-//
-//        return var1;
-//    }
 
-//    public BlockPos readBlockPos() {
-//
-//        int x = readInt();
-//        int y = readInt();
-//        int z = readInt();
-//        return new BlockPos(x, y, z);
-//
-//    }
+            /*
+              writeShort(itemStack.getItemDamage());
+               NBTTagCompound var2 = null;
+
+            if (itemStack.getItem().isDamageable() || itemStack.getItem().getShareTag())
+            {
+                var2 = itemStack.stackTagCompound;
+            }
+
+             this.writeNBTTagCompoundToBuffer(var2);
+            */
+        }
+    }
+
+    public ItemStack readItemStackFromBuffer() throws IOException {
+        ItemStack var1 = null;
+        int id = readInt();
+
+        if (id >= 0) {
+            int sizeOrMass = this.readInt();
+
+            var1 = new ItemStack(Item.getItemById(id), sizeOrMass);
+            //  var1.stackTagCompound = this.readNBTTagCompoundFromBuffer();
+        }
+
+        return var1;
+    }
+    public void writeBlockState(BlockState blockState) throws IOException {
+        if (blockState == null) {
+            writeInt(-1);
+        } else {
+            writeInt(Blocks.getIdByBlock( blockState.block()));
+            writeBlockPos(blockState);
+            writeByte(blockState.direction().id());
+
+        }
+    }
+
+
+    public BlockState readBlockState() throws IOException {
+        BlockState var1 = null;
+        int id = readInt();
+
+        if (id >= 0) {
+           var1 = new BlockState( Blocks.getBlockById(id),readInt(),readInt(),readInt(), Direction.DIRECTIONAL_BY_ID()[readByte()],0,0,0);
+        }
+
+        return var1;
+    }
+
+    public BlockPos readBlockPos() {
+
+        int x = readInt();
+        int y = readInt();
+        int z = readInt();
+        return new BlockPos(x, y, z);
+
+    }
 /*
     public void writeItemUser(ItemUser item)throws IOException {
         writeInt(item.id());

@@ -4,7 +4,7 @@ import ru.megains.techworld.common.network.{PacketProcessHandler, ServerStatusRe
 import ru.megains.techworld.common.register.{Bootstrap, GameRegister}
 import ru.megains.techworld.common.utils.Logger
 import ru.megains.techworld.server.network.NetworkSystem
-import ru.megains.techworld.server.world.WorldServer
+import ru.megains.techworld.server.world.{ServerWorldEventHandler, WorldServer}
 
 import scala.reflect.io.Path
 
@@ -22,7 +22,7 @@ class TWServer(directory:Path) extends Logger{
     def start(): Boolean = {
         log.info("Starting TechWorld server  version 0.0.1")
         Bootstrap.init(GameRegister)
-
+        world.addEventListener(new ServerWorldEventHandler(this, world))
 
         networkSystem.startLan(null, 20000)
         true

@@ -8,7 +8,7 @@ import ru.megains.techworld.common.entity.EntityLivingBase
 import ru.megains.techworld.common.network.NetworkManager
 import ru.megains.techworld.common.network.handler.{INetHandler, INetHandlerPlayClient}
 import ru.megains.techworld.common.network.packet.Packet
-import ru.megains.techworld.common.network.packet.play.server.{SPacketChunkData, SPacketDestroyEntities, SPacketEntity, SPacketEntityTeleport, SPacketEntityVelocity, SPacketJoinGame, SPacketMobSpawn, SPacketPlayerPosLook, SPacketSpawnPlayer, SPacketUnloadChunk}
+import ru.megains.techworld.common.network.packet.play.server.{SPacketBlockChange, SPacketChunkData, SPacketDestroyEntities, SPacketEntity, SPacketEntityTeleport, SPacketEntityVelocity, SPacketJoinGame, SPacketMobSpawn, SPacketMultiBlockChange, SPacketPlayerPosLook, SPacketSetSlot, SPacketSpawnPlayer, SPacketUnloadChunk, SPacketWindowItems}
 import ru.megains.techworld.common.register.Entities
 import ru.megains.techworld.common.utils.Logger
 import ru.megains.techworld.common.world.Chunk
@@ -118,35 +118,33 @@ class NetHandlerPlayClient(game: TechWorld, previousScene: GuiScreen, val netMan
 
 
     }
-    //
-    //
-    //    def handleBlockChange(packetIn: SPacketBlockChange) {
-    //      //  clientWorldController.invalidateRegionAndSetBlock(packetIn.block)
-    //
-    //    }
-    //
-    //    def handleMultiBlockChange(packetIn: SPacketMultiBlockChange) {
-    //        for (blockData <- packetIn.changedBlocks) {
-    //           // clientWorldController.invalidateRegionAndSetBlock(blockData)
-    //        }
-    //    }
-    //
-    //    override def handleSetSlot(packetIn: SPacketSetSlot): Unit = {
-    //        if (packetIn.slot == -1) {
-    //          //  gameController.player.inventory.itemStack = packetIn.item
-    //        } else {
-    //          //  gameController.player.openContainer.putStackInSlot(packetIn.slot, packetIn.item)
-    //        }
-    //
-    //    }
-    //
-    //    override def handleWindowItems(packetIn: SPacketWindowItems): Unit = {
-    //      //  val openContainer = gameController.player.openContainer
-    //
-    //        for (i <- packetIn.itemStacks.indices) {
-    //          //  openContainer.putStackInSlot(i, packetIn.itemStacks(i))
-    //        }
-    //    }
+
+        def handleBlockChange(packetIn: SPacketBlockChange): Unit = {
+            worldClient.invalidateRegionAndSetBlock(packetIn.block)
+        }
+
+        def handleMultiBlockChange(packetIn: SPacketMultiBlockChange): Unit = {
+            for (blockData <- packetIn.changedBlocks) {
+                worldClient.invalidateRegionAndSetBlock(blockData)
+            }
+        }
+
+        override def handleSetSlot(packetIn: SPacketSetSlot): Unit = {
+            if (packetIn.slot == -1) {
+                game.player.inventory.itemStack = packetIn.item
+            } else {
+                game.player.openContainer.putStackInSlot(packetIn.slot, packetIn.item)
+            }
+
+        }
+
+        override def handleWindowItems(packetIn: SPacketWindowItems): Unit = {
+            val openContainer = game.player.openContainer
+
+            for (i <- packetIn.itemStacks.indices) {
+                openContainer.putStackInSlot(i, packetIn.itemStacks(i))
+            }
+        }
     //
     //    override def handlePlayerListItem(packetIn: SPacketPlayerListItem): Unit = {
     //

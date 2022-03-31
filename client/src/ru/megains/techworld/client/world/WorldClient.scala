@@ -2,7 +2,9 @@ package ru.megains.techworld.client.world
 
 import ru.megains.techworld.client.TechWorld
 import ru.megains.techworld.client.entity.EntityOtherPlayerC
+import ru.megains.techworld.common.block.{BlockAir, BlockState}
 import ru.megains.techworld.common.entity.Entity
+import ru.megains.techworld.common.register.Blocks
 import ru.megains.techworld.common.world.{ChunkPosition, World}
 
 import scala.collection.mutable
@@ -38,7 +40,24 @@ class WorldClient(game: TechWorld) extends World {
 
         }
     }
+    def invalidateRegionAndSetBlock( block: BlockState): Boolean = {
+        /*
+          val i: Int = pos.getX
+          val j: Int = pos.getY
+           val k: Int = pos.getZ
+         invalidateBlockReceiveRegion(i, j, k, i, j, k)
+ */
+        if(block.block == BlockAir){
+            removeBlock(block)
+        }else{
+            setBlock(block)
+        }
 
+
+        // setBlock(pos, block, 3)
+        true
+
+    }
 
     override def update(): Unit = {
 

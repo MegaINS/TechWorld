@@ -21,7 +21,8 @@ class RendererGame(game:TechWorld) {
     var worldCamera: PerspectiveCamera = new PerspectiveCamera(FOV, game.window.width, game.window.height, Z_NEAR, Z_FAR)
 
     var skyBoxRenderer: RendererSkyBox = _
-
+    var rayTraceRender: RayTraceRender = new RayTraceRender()
+    var blockPlaceSetRender: BlockSetPositionRender = new BlockSetPositionRender()
 
     var rendererWorld:RendererWorld = _
     var world:WorldClient = _
@@ -33,7 +34,7 @@ class RendererGame(game:TechWorld) {
         glLineWidth( 	0.5f)
 
         skyBoxRenderer = new RendererSkyBox()
-      // rayTraceRender.init()
+        rayTraceRender.init()
         skyBoxRenderer.init()
        // chunkBoundsRenderer.init()
     }
@@ -68,8 +69,8 @@ class RendererGame(game:TechWorld) {
         rendererWorld.render(game.player, worldShader)
 
         glDisable(GL_DEPTH_TEST)
-       // rayTraceRender.render(worldShader)
-       // blockPlaceSetRender.render(worldShader)
+        rayTraceRender.render(worldShader)
+        blockPlaceSetRender.render(worldShader)
         glEnable(GL_DEPTH_TEST)
        // chunkBoundsRenderer.render(worldShader)
 
@@ -78,6 +79,7 @@ class RendererGame(game:TechWorld) {
     }
 
     def update(): Unit = {
-
+        rayTraceRender.update(game.rayTrace)
+        blockPlaceSetRender.update(game.blockSetPosition)
     }
 }

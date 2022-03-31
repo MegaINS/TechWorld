@@ -3,7 +3,7 @@ package ru.megains.techworld.server
 import ru.megains.techworld.common.block.BlockPos
 import ru.megains.techworld.common.network.handler.INetHandler
 import ru.megains.techworld.common.network.packet.Packet
-import ru.megains.techworld.common.network.packet.play.server.{SPacketChunkData, SPacketUnloadChunk}
+import ru.megains.techworld.common.network.packet.play.server.{SPacketBlockChange, SPacketChunkData, SPacketMultiBlockChange, SPacketUnloadChunk}
 import ru.megains.techworld.common.utils.Logger
 import ru.megains.techworld.common.world.{Chunk, ChunkPosition}
 import ru.megains.techworld.server.entity.EntityPlayerS
@@ -101,16 +101,16 @@ class PlayerChunkMapEntry(playerChunkMap: PlayerChunkMap, chunkX: Int, chunkY: I
         if (isSentToPlayers && chunk != null) if (changes != 0) {
             if (changes == 1) {
                 val blockPos: BlockPos = changedBlocks(0)
-               // sendPacket(new SPacketBlockChange(playerChunkMap.worldServer, blockPos))
-                //  val state: IBlockState = playerChunkMap.getWorldServer.getBlockState(blockpos)
-                //  if (state.getBlock.hasTileEntity(state)) sendBlockEntity(playerChunkMap.getWorldServer.getTileEntity(blockpos))
+                sendPacket(new SPacketBlockChange(playerChunkMap.worldServer, blockPos))
+                  //val state: IBlockState = playerChunkMap.getWorldServer.getBlockState(blockpos)
+                 // if (state.getBlock.hasTileEntity(state)) sendBlockEntity(playerChunkMap.getWorldServer.getTileEntity(blockpos))
             }
             else if (changes >= 64) {
-               // sendPacket(new SPacketChunkData(chunk))
+                sendPacket(new SPacketChunkData(chunk))
 
             }
             else {
-               // sendPacket(new SPacketMultiBlockChange(changedBlocks, chunk))
+                sendPacket(new SPacketMultiBlockChange(changedBlocks, chunk))
 
                 /*
                                 var l: Int = 0
