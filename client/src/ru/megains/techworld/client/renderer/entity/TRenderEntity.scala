@@ -9,5 +9,5 @@ trait TRenderEntity extends TRenderTexture{
 
     def init():Unit
 
-    def render(entity: Entity, world: World,shader: Shader): Boolean
+    def render(entity: Entity, world: World,shader: Shader,partialTicks:Double): Boolean
 }

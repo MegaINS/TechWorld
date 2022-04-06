@@ -1,6 +1,6 @@
 package ru.megains.techworld.common.network.handler
 
-import ru.megains.techworld.common.network.packet.play.server.{SPacketBlockChange, SPacketChunkData, SPacketDestroyEntities, SPacketEntity, SPacketEntityTeleport, SPacketEntityVelocity, SPacketJoinGame, SPacketMobSpawn, SPacketMultiBlockChange, SPacketPlayerPosLook, SPacketSetSlot, SPacketSpawnPlayer, SPacketUnloadChunk, SPacketWindowItems}
+import ru.megains.techworld.common.network.packet.play.server.{SPacketBlockChange, SPacketChangeGameState, SPacketChunkData, SPacketDestroyEntities, SPacketEntity, SPacketEntityTeleport, SPacketEntityVelocity, SPacketJoinGame, SPacketMobSpawn, SPacketMultiBlockChange, SPacketPlayerPosLook, SPacketSetSlot, SPacketSpawnPlayer, SPacketUnloadChunk, SPacketWindowItems}
 
 
 trait INetHandlerPlayClient extends INetHandler {
@@ -23,7 +23,7 @@ trait INetHandlerPlayClient extends INetHandler {
 
     def handlePlayerPosLook(packetIn: SPacketPlayerPosLook): Unit
 
-//    def handleChangeGameState(packetIn: SPacketChangeGameState): Unit
+    def handleChangeGameState(packetIn: SPacketChangeGameState): Unit
 //
 //    def handlePlayerListItem(packetIn: SPacketPlayerListItem): Unit
 //

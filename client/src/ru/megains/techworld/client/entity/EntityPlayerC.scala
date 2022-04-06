@@ -1,11 +1,14 @@
 package ru.megains.techworld.client.entity
 
 import ru.megains.techworld.client.network.handler.NetHandlerPlayClient
+import ru.megains.techworld.client.register.GameRegisterRender
 import ru.megains.techworld.client.renderer.world.ChunkRenderer.game
 import ru.megains.techworld.common.entity.{Entity, EntityPlayer}
 import ru.megains.techworld.common.item.itemstack.ItemStack
 import ru.megains.techworld.common.network.packet.play.client.CPacketPlayer
 import ru.megains.techworld.common.register.GameRegister
+import ru.megains.techworld.common.tileentity.TileEntityInventory
+import ru.megains.techworld.common.world.World
 
 import scala.util.Random
 
@@ -19,20 +22,56 @@ class EntityPlayerC() extends EntityPlayer{
     private var prevOnGround: Boolean = false
     var connection: NetHandlerPlayClient =_
 
+    val g:Float = 20f/20f/20f
+    val speedJump:Float = 6.5f/20f
 
     def update(y: Int): Unit = {
+        super.update()
+
+        if (gameType.isSurvival) {
+            if (isJumping && onGround) {
+                motionY = speedJump
+            }
+        } else {
+            motionY += y * 0.15f
+        }
+
+        calculateMotion(moveForward, moveStrafing, if (onGround || gameType.isCreative) 0.04f else 0.02f)
+
+        move(motionX, motionY, motionZ)
 
 
-        motionY = y
-        motionX = 0
-        motionZ = 0
-        calculateMotion(moveForward, moveStrafing, 1.14f)
 
-        move(motionX,motionY,motionZ)
+        motionX *= 0.8f
+        motionZ *= 0.8f
+        motionY *= 0.98f
+
+        if(gameType.isSurvival){
+            motionY -= g
+        }
+        if (!gameType.isSurvival) {
+            motionY *= 0.90f
+        }
+        if (onGround && gameType.isSurvival) {
+            motionX *= 0.9f
+            motionZ *= 0.9f
+        }
+
         onUpdateWalkingPlayer()
     }
 
+    override def setContainer(world: World, x: Int, y: Int, z: Int): Unit = {
+        val tileEntity = world.getTileEntity(x, y, z)
 
+        tileEntity match {
+            case inv:TileEntityInventory =>
+                val gui = GameRegisterRender.getGuiContainer(tileEntity.getClass)(this,tileEntity)
+                openContainer = gui.inventorySlots
+                game.setScreen(gui)
+            case _=>
+        }
+
+    }
 
     def onUpdateWalkingPlayer(): Unit = {
         val onGround = true

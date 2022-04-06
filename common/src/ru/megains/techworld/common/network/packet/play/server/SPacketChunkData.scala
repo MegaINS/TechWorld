@@ -1,7 +1,12 @@
 package ru.megains.techworld.common.network.packet.play.server
 
+import io.netty.buffer.{ByteBufInputStream, ByteBufOutputStream}
+import ru.megains.techworld.common.block.{BlockPos, BlockState}
+import ru.megains.techworld.common.nbt.NBTData
 import ru.megains.techworld.common.network.handler.INetHandlerPlayClient
 import ru.megains.techworld.common.network.packet.{Packet, PacketBuffer}
+import ru.megains.techworld.common.register.GameRegister
+import ru.megains.techworld.common.tileentity.TileEntity
 import ru.megains.techworld.common.world.{BlockStorage, Chunk, ChunkPosition}
 
 
@@ -12,14 +17,14 @@ class SPacketChunkData extends Packet[INetHandlerPlayClient] {
     var blockStorage: BlockStorage = _
     var isEmpty: Boolean = false
     var position: ChunkPosition =_
-   // var tileEntityMap:Array[TileEntity] = _
+    var tileEntityMap:Array[TileEntity] = _
 
     def this(chunkIn: Chunk) ={
         this()
         blockStorage = chunkIn.blockStorage
         isEmpty = chunkIn.isEmpty
         position = chunkIn.pos
-       // tileEntityMap = chunkIn.chunkTileEntityMap.values.toArray
+        tileEntityMap = chunkIn.chunkTileEntityMap.values.toArray
 
     }
 
@@ -75,29 +80,25 @@ class SPacketChunkData extends Packet[INetHandlerPlayClient] {
 //
 //        }
 
-      //  val sizeTileEntity = buf.readInt()
-       // tileEntityMap = new Array[TileEntity](sizeTileEntity)
+        val sizeTileEntity = buf.readInt()
+        tileEntityMap = new Array[TileEntity](sizeTileEntity)
 
-//        for (i <- tileEntityMap.indices) {
-//            val id = buf.readInt()
-//            val x = buf.readInt()
-//            val y = buf.readInt()
-//            val z = buf.readInt()
-//            val pos = new BlockPos(x,y,z)
-//            val tileEntityClass = GameRegister.getTileEntityById(id)
-//
-//            if(tileEntityClass != null){
-//                val tileEntity:TileEntity = tileEntityClass.getConstructor(classOf[BlockPos]).newInstance(pos)
-//                val nbt = NBTData.createCompound()
-//                nbt.read(new ByteBufInputStream(buf))
-//                tileEntity.readFromNBT(nbt)
-//                tileEntityMap(i) = tileEntity
-//            }else{
-//                println(s"error load tileEntity $id")
-//            }
-//
-//
-//        }
+        for (i <- tileEntityMap.indices) {
+            val id = buf.readInt()
+            val blockState = buf.readBlockState()
+            val tileEntityClass = GameRegister.getTileEntityById(id)
+            if(tileEntityClass != null){
+                val tileEntity:TileEntity = tileEntityClass.getConstructor(classOf[BlockState]).newInstance(blockState)
+                val nbt = NBTData.createCompound()
+                nbt.read(new ByteBufInputStream(buf))
+                tileEntity.readFromNBT(nbt)
+                tileEntityMap(i) = tileEntity
+            }else{
+                println(s"error load tileEntity $id")
+            }
+
+
+        }
 
 
 
@@ -134,20 +135,17 @@ class SPacketChunkData extends Packet[INetHandlerPlayClient] {
 //                }
 //        }
 
-       // buf.writeInt(tileEntityMap.length)
+        buf.writeInt(tileEntityMap.length)
 
-//        for (tileEntity <- tileEntityMap) {
-//
-//            buf.writeInt(GameRegister.getIdByTileEntity(tileEntity.getClass ))
-//            buf.writeInt(tileEntity.pos.x)
-//            buf.writeInt(tileEntity.pos.y)
-//            buf.writeInt(tileEntity.pos.z)
-//
-//            val nbt = NBTData.createCompound()
-//            tileEntity.writeToNBT(nbt)
-//            nbt.write(new ByteBufOutputStream(buf))
-//
-//        }
+        for (tileEntity <- tileEntityMap) {
+
+            buf.writeInt(GameRegister.getIdByTileEntity(tileEntity.getClass ))
+            buf.writeBlockState(tileEntity.blockState)
+            val nbt = NBTData.createCompound()
+            tileEntity.writeToNBT(nbt)
+            nbt.write(new ByteBufOutputStream(buf))
+
+        }
 
     }
 

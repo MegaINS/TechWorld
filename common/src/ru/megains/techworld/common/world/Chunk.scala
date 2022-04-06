@@ -1,12 +1,15 @@
 package ru.megains.techworld.common.world
 
-import ru.megains.techworld.common.block.BlockState
+import ru.megains.techworld.common.block.{BlockContainer, BlockState}
 import ru.megains.techworld.common.entity.Entity
+import ru.megains.techworld.common.tileentity.{TileEntity, TileEntityContainer}
 
+import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
 class Chunk(val pos: ChunkPosition, val world: World) {
 
+    var chunkTileEntityMap = new mutable.HashMap[Long,TileEntity]()
     val entityLists = new ArrayBuffer[Entity]()
     var blockStorage = new BlockStorage(pos)
     var isEmpty: Boolean = true
@@ -22,12 +25,29 @@ class Chunk(val pos: ChunkPosition, val world: World) {
     }
 
     def removeBlock(blockState: BlockState): Unit = {
+
+
+        val blockStatePrevious =  getBlock(blockState.x,blockState.y,blockState.z)
+
         blockStorage.removeBlock(blockState)
+
+        blockStatePrevious.block match {
+            case _:BlockContainer =>
+                world.removeTileEntity(blockState.x,blockState.y,blockState.z)
+            case _ =>
+        }
     }
 
     def setBlock(blockState: BlockState): Unit = {
         isEmpty = false
         blockStorage.setBlock(blockState)
+
+        blockState.block match {
+            case container:TileEntityContainer =>
+                val  tileEntity = container.createNewTileEntity(world,blockState)
+                world.setTileEntity(blockState.x,blockState.y,blockState.z, tileEntity)
+            case _ =>
+        }
     }
 
     def isAirBlock(blockState: BlockState): Boolean = {
@@ -51,6 +71,26 @@ class Chunk(val pos: ChunkPosition, val world: World) {
         entityLists += entity
     }
 
+    def removeTileEntity(x: Int, y: Int, z: Int): Unit = {
+        chunkTileEntityMap -= Chunk.getIndex(x,y,z)
+    }
+
+    def addTileEntity(tileEntityIn: TileEntity): Unit = {
+        addTileEntity(tileEntityIn.blockState.x,tileEntityIn.blockState.y,tileEntityIn.blockState.z,tileEntityIn)
+        world.addTileEntity(tileEntityIn)
+    }
+
+    def addTileEntity(x: Int, y: Int, z: Int, tileEntityIn: TileEntity): Unit = {
+        getBlock(x, y, z).block match {
+            case _:BlockContainer =>
+                chunkTileEntityMap += Chunk.getIndex(x,y,z) -> tileEntityIn
+            case _ =>
+        }
+    }
+    def getTileEntity(x: Int, y: Int, z: Int): TileEntity = {
+        var tileentity = chunkTileEntityMap.get( Chunk.getIndex(x,y,z))
+        tileentity.get
+    }
 }
 
 

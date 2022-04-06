@@ -7,7 +7,7 @@ class GuiGameSettings(previosScreen:GuiScreen) extends GuiScreen {
 
     val name = new Label("Options")
 
-    lazy val fpsSlider:MSlider = new MSlider("FPS",300,40,30,500,game.settings.FPS, ()=>{game.settings.FPS = fpsSlider.value;game.timerFps.targetTick = fpsSlider.value})
+    lazy val fpsSlider:MSlider = new MSlider("FPS",300,40,30,500,game.settings.FPS, ()=>{game.settings.FPS = fpsSlider.value;game.timerFps.ticksPerSecond = fpsSlider.value})
     lazy val fovSlider:MSlider = new MSlider("FOV",300,40,1,100,game.settings.FOV, ()=>{game.settings.FOV = fovSlider.value})
 
     lazy val renderDistanceWidthSlider:MSlider = new MSlider("RENDER_DISTANCE_WIDTH",300,40,1,20,game.settings.RENDER_DISTANCE_WIDTH, ()=>{game.settings.RENDER_DISTANCE_WIDTH = renderDistanceWidthSlider.value})

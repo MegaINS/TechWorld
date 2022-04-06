@@ -62,7 +62,7 @@ class Window(var width:Int, var height:Int, title:String) {
 
 
 
-    def update(): Unit ={
+    def update(partialTicks:Double): Unit ={
         glfwSwapBuffers(id)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT)
     }

@@ -4,7 +4,7 @@ import ru.megains.techworld.client.renderer.shader.data.Shader
 import ru.megains.techworld.client.renderer.text.Label
 import ru.megains.techworld.client.renderer.world.ChunkRenderer
 import ru.megains.techworld.client.utils.FrameCounter
-import ru.megains.techworld.common.entity.EntityPlayer
+import ru.megains.techworld.common.entity.{EntityPlayer, GameType}
 import ru.megains.techworld.common.utils.Direction
 
 class GuiDebugInfo() extends GuiScreen {
@@ -17,6 +17,7 @@ class GuiDebugInfo() extends GuiScreen {
     var position_yaw: Label = _
     var position_pitch: Label = _
     var position_side: Label = _
+    var player_gameType: Label = _
     var fps: Label = _
     var memory: Label = _
     var chunkUpdate: Label = _
@@ -34,7 +35,7 @@ class GuiDebugInfo() extends GuiScreen {
     var yaw: Float = Float.MinValue
     var pitch: Float = Float.MinValue
     var side: Direction = Direction.NONE
-
+    var gameType:GameType = GameType.NOT_SET
     var tickI: Int = 20
 
     override def init(): Unit = {
@@ -64,12 +65,14 @@ class GuiDebugInfo() extends GuiScreen {
             posY = 140
         }
 
-
-        renderRangeH = new Label("renderRangeH: " + game.settings.RENDER_DISTANCE_WIDTH) {
+        player_gameType = new Label("Game Type:") {
             posY = 160
         }
-        renderRangeV = new Label("renderRangeV: " + game.settings.RENDER_DISTANCE_HEIGHT) {
+        renderRangeH = new Label("renderRangeH: " + game.settings.RENDER_DISTANCE_WIDTH) {
             posY = 180
+        }
+        renderRangeV = new Label("renderRangeV: " + game.settings.RENDER_DISTANCE_HEIGHT) {
+            posY = 200
         }
 
 
@@ -94,10 +97,11 @@ class GuiDebugInfo() extends GuiScreen {
         }
 
 
-        addChildren(name, memory, fps, position, position_x, position_y, position_z, position_yaw, position_pitch, position_side, renderRangeH, renderRangeV, chunkUpdate, chunkRender, blockRender)
+        addChildren(name, memory, fps,player_gameType, position, position_x, position_y, position_z, position_yaw, position_pitch, position_side, renderRangeH, renderRangeV, chunkUpdate, chunkRender, blockRender)
 
 
     }
+
     var id = -1
 
     override def update(): Unit = {
@@ -128,16 +132,14 @@ class GuiDebugInfo() extends GuiScreen {
             pitch = player.rotPitch
             position_pitch.text = ("pitch: " + player.rotPitch)
         }
-        //        if (player.side != side) {
-        //            side = player.side
-        //            position_side.text = ("side: " + side)
-        //        }
-
-
-        //        if (player.name != name.text) {
-        //            name.text = ("Name: " + player.name)
-        //        }
-
+        if (player.side != side) {
+            side = player.side
+            position_side.text = ("side: " + side)
+        }
+        if (player.gameType != gameType) {
+            gameType = player.gameType
+            player_gameType.text = ("Game Type: " + gameType)
+        }
 
         tickI += 1
         if (tickI > 19) {

@@ -60,7 +60,7 @@ class WorldClient(game: TechWorld) extends World {
     }
 
     override def update(): Unit = {
-
+        super.update()
     }
 
     override def removeEntity(entity: Entity): Unit = {

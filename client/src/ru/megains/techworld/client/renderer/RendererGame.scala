@@ -46,7 +46,7 @@ class RendererGame(game:TechWorld) {
         rendererWorld = new RendererWorld(world)
     }
 
-    def render(): Unit = {
+    def render(partialTicks:Double): Unit = {
 
         worldCamera.setPerspective(Math.toRadians(game.settings.FOV).toFloat,game.window.width,game.window.height, Z_NEAR, Z_FAR)
         worldCamera.setPos(game.player.posX, game.player.posY + game.player.levelView, game.player.posZ)
@@ -66,7 +66,7 @@ class RendererGame(game:TechWorld) {
         ShaderManager.bindShader(worldShader)
         worldShader.setUniform(worldCamera)
 
-        rendererWorld.render(game.player, worldShader)
+        rendererWorld.render(game.player, worldShader,partialTicks)
 
         glDisable(GL_DEPTH_TEST)
         rayTraceRender.render(worldShader)

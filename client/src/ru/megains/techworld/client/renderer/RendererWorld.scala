@@ -21,7 +21,7 @@ class RendererWorld(world: WorldClient) {
     var lastY: Int = Int.MinValue
     var lastZ: Int = Int.MinValue
 
-    def render(player: EntityPlayerC, shader: Shader): Unit = {
+    def render(player: EntityPlayerC, shader: Shader,partialTicks:Double): Unit = {
         glEnable(GL_STENCIL_TEST)
         glEnable(GL_DEPTH_TEST)
         glEnable(GL_CULL_FACE)
@@ -37,7 +37,7 @@ class RendererWorld(world: WorldClient) {
         // glDisable(GL_DEPTH_TEST)
         // glDisable(GL_CULL_FACE)
         // glLineWidth(2f)
-         renderEntities(shader: Shader)
+         renderEntities(shader,partialTicks)
         // glLineWidth(0.5f)
     }
 
@@ -122,7 +122,7 @@ class RendererWorld(world: WorldClient) {
         }
     }
 
-    def renderEntities(shader: Shader): Unit = {
+    def renderEntities(shader: Shader,partialTicks:Double): Unit = {
 
 
         world.entityList.filter {
@@ -133,7 +133,7 @@ class RendererWorld(world: WorldClient) {
                 // if (frustum.cubeInFrustum(entity.body)) {
                 // val modelViewMatrix = transformation.buildEntityModelViewMatrix(entity)
                 // Renderer.currentShaderProgram.setUniform("model", modelViewMatrix)
-                GameRegisterRender.getEntityRender(entity).render(entity, world, shader)
+                GameRegisterRender.getEntityRender(entity).render(entity, world, shader,partialTicks)
             }
             // }
         )

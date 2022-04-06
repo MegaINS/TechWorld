@@ -2,12 +2,13 @@ package ru.megains.techworld.server.network.handler
 
 import com.sun.javafx.geom.Vec3f
 import ru.megains.techworld.common.block.BlockPos
+import ru.megains.techworld.common.entity.GameType
 import ru.megains.techworld.common.inventory.InventoryPlayer
 import ru.megains.techworld.common.network.NetworkManager
 import ru.megains.techworld.common.network.handler.{INetHandler, INetHandlerPlayServer}
 import ru.megains.techworld.common.network.packet.Packet
-import ru.megains.techworld.common.network.packet.play.client.{CPacketClickWindow, CPacketHeldItemChange, CPacketPlayer, CPacketPlayerMouse}
-import ru.megains.techworld.common.utils.{Logger, RayTraceType}
+import ru.megains.techworld.common.network.packet.play.client.{CPacketClickWindow, CPacketCloseWindow, CPacketHeldItemChange, CPacketPlayer, CPacketPlayerAction, CPacketPlayerMouse}
+import ru.megains.techworld.common.utils.{Action, Logger, RayTraceType}
 import ru.megains.techworld.server.TWServer
 import ru.megains.techworld.server.entity.EntityPlayerS
 
@@ -173,7 +174,17 @@ class NetHandlerPlayServer(server: TWServer, val networkManager: NetworkManager,
         }
     }
 
-//    override def processCloseWindow(packetIn: CPacketCloseWindow): Unit = {
-//        playerEntity.closeContainer()
-//    }
+    override def processCloseWindow(packetIn: CPacketCloseWindow): Unit = {
+        playerEntity.closeContainer()
+    }
+
+    override def processPlayerAction(packetIn: CPacketPlayerAction): Unit ={
+        packetIn.action match {
+            case Action.GAME_TYPE =>
+                playerEntity.gameType = GameType.apply(packetIn.data(0))
+
+            case Action.NONE => ???
+        }
+    }
+
 }

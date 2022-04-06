@@ -6,16 +6,16 @@ import ru.megains.techworld.client.network.handler.NetHandlerPlayClient
 import ru.megains.techworld.client.renderer.Mouse
 import ru.megains.techworld.client.renderer.gui.GuiInGameMenu
 import ru.megains.techworld.common.block.BlockState
-import ru.megains.techworld.common.entity.EntityPlayer
+import ru.megains.techworld.common.entity.{EntityPlayer, GameType}
 import ru.megains.techworld.common.item.itemstack.ItemStack
 import ru.megains.techworld.common.item.{ItemBlock, ItemPack}
-import ru.megains.techworld.common.network.packet.play.client.{CPacketClickWindow, CPacketHeldItemChange, CPacketPlayerMouse}
-import ru.megains.techworld.common.utils.RayTraceType
+import ru.megains.techworld.common.network.packet.play.client.{CPacketClickWindow, CPacketHeldItemChange, CPacketPlayerAction, CPacketPlayerMouse}
+import ru.megains.techworld.common.utils.{Action, RayTraceType}
 import ru.megains.techworld.common.world.World
 
 import scala.util.Random
 
-class PlayerController(game: TechWorld, net: NetHandlerPlayClient) {
+class PlayerController(game: TechWorld,val net: NetHandlerPlayClient) {
     def sendQuittingDisconnectingPacket(): Unit = {
         net.netManager.closeChannel("Quitting")
     }
@@ -48,7 +48,9 @@ class PlayerController(game: TechWorld, net: NetHandlerPlayClient) {
                 // entityCube.setPosition(gameScene.player.posX + Random.nextInt(50) - 25, gameScene.player.posY + Random.nextInt(50), gameScene.player.posZ + Random.nextInt(50) - 25)
                 // gameScene.world.spawnEntityInWorld(entityCube)
                 //case GLFW_KEY_L => renderer.isLight = !renderer.isLight
-                //  case GLFW_KEY_C => gameScene.player.gameType = if(gameScene.player.gameType.isCreative) GameType.SURVIVAL else GameType.CREATIVE
+                case GLFW_KEY_C =>
+                    game.player.gameType = GameType.next(game.player.gameType.id)
+                    net.sendPacket(new CPacketPlayerAction(Action.GAME_TYPE,game.player.gameType.id))
                 // case GLFW_KEY_O =>  guiManager.setGuiScreen(new GuiTestSet())
                 case _ =>
             }

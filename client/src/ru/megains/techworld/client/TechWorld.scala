@@ -13,6 +13,7 @@ import ru.megains.techworld.client.renderer.{Mouse, RendererGame, RendererWorld,
 import ru.megains.techworld.client.utils.FrameCounter
 import ru.megains.techworld.client.world.{ClientWorldEventHandler, WorldClient}
 import ru.megains.techworld.common.block.BlockState
+import ru.megains.techworld.common.entity.GameType
 import ru.megains.techworld.common.item.ItemBlock
 import ru.megains.techworld.common.item.itemstack.ItemStack
 import ru.megains.techworld.common.network.{NetworkManager, PacketProcessHandler}
@@ -76,12 +77,12 @@ class TechWorld(config: Configuration) extends Logger{
         true
     }
 
-    def render(): Unit = {
-        guiManager.render()
-        window.update()
+    def render(partialTicks:Double): Unit = {
+        guiManager.render(partialTicks)
+        window.update(partialTicks)
 
 
-        if(world!= null) rendererGame.render()
+        if(world!= null) rendererGame.render(partialTicks)
         FrameCounter.gameRender()
     }
 
@@ -110,7 +111,13 @@ class TechWorld(config: Configuration) extends Logger{
                 player.turn(Mouse.getDX.toFloat,-Mouse.getDY.toFloat)
                 player.update(moved.y)
             }
-            rayTrace = player.rayTrace(5)
+
+            if(!player.gameType.isSpectator){
+                rayTrace = player.rayTrace(5)
+            }else{
+                rayTrace = RayTraceResult.VOID
+            }
+
 
             if (rayTrace.traceType == RayTraceType.BLOCK) {
 
@@ -152,23 +159,23 @@ class TechWorld(config: Configuration) extends Logger{
     }
 
     def gameLoop(): Unit = {
-        timerFps.init()
-        timerTps.init()
+//        timerFps.init()
+//        timerTps.init()
         var start = TechWorld.getSystemTime
         while (running) {
 
             if (window.isClose) running = false
 
 
-            timerFps.update()
-            for (_ <- 0 until timerFps.tick) {
+            timerFps.updateTimer()
+            for (_ <- 0 until timerFps.elapsedTicks) {
                 start = TechWorld.getSystemTime
-                render()
+                render(timerTps.renderPartialTicks)
                // log.info(s"render = ${start - TechWorld.getSystemTime}")
             }
 
-            timerTps.update()
-            for (_ <- 0 until timerTps.tick) {
+            timerTps.updateTimer()
+            for (_ <- 0 until timerTps.elapsedTicks) {
                 start = TechWorld.getSystemTime
                 update()
                // log.info(s"update = ${start - TechWorld.getSystemTime}")
@@ -205,6 +212,7 @@ class TechWorld(config: Configuration) extends Logger{
 
         rendererGame.setWorld(world)
     }
+
 
 
 

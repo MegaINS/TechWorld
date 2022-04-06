@@ -1,9 +1,10 @@
 package ru.megains.techworld.server
 
 import ru.megains.techworld.common.block.{BlockPos, BlockState}
+import ru.megains.techworld.common.entity.GameType
 import ru.megains.techworld.common.item.itemstack.ItemStack
 import ru.megains.techworld.common.item.{ItemBlock, ItemPack}
-import ru.megains.techworld.common.network.packet.play.server.SPacketBlockChange
+import ru.megains.techworld.common.network.packet.play.server.{SPacketBlockChange, SPacketChangeGameState}
 import ru.megains.techworld.common.utils.{Direction, RayTraceResult}
 import ru.megains.techworld.common.world.World
 import ru.megains.techworld.server.entity.EntityPlayerS
@@ -17,10 +18,10 @@ class PlayerInteractionManager(world: World) {
     //var gameType: GameType = GameType.CREATIVE
     var isDestroyingBlock: Boolean = false
 
-//    def setGameType(gameTypeIn: GameType): Unit = {
-//        gameType = gameTypeIn
-//
-//    }
+    def setGameType(gameTypeIn: GameType): Unit = {
+        thisPlayerMP.gameType = gameTypeIn
+        thisPlayerMP.connection.sendPacket(new SPacketChangeGameState(3, gameTypeIn.id))
+    }
 
 
 

@@ -1,8 +1,11 @@
 package ru.megains.techworld.common.inventory
 
 import ru.megains.techworld.common.entity.EntityPlayer
-import ru.megains.techworld.common.item.ItemType
+import ru.megains.techworld.common.item.{Item, ItemType}
 import ru.megains.techworld.common.item.itemstack.ItemStack
+import ru.megains.techworld.common.nbt.NBTType
+import ru.megains.techworld.common.nbt.NBTType.EnumNBTEnd
+import ru.megains.techworld.common.nbt.tag.NBTCompound
 
 class InventoryPlayer(val entityPlayer: EntityPlayer) extends Inventory {
 
@@ -116,33 +119,33 @@ class InventoryPlayer(val entityPlayer: EntityPlayer) extends Inventory {
         newStack
     }
 
-//    def writeToNBT(data: NBTCompound): Unit = {
-//        val inventory = data.createList("mainInventory", EnumNBTCompound)
-//        for (i <- mainInventory.indices) {
-//            val compound = inventory.createCompound()
-//            val itemStack = mainInventory(i)
-//
-//            if (itemStack != null) {
-//                compound.setValue("id", Item.getIdFromItem(itemStack.item))
-//                compound.setValue("sizeOrMass", if(itemStack.item.itemType!= ItemType.MASS) itemStack.stackSize else itemStack.stackMass)
-//
-//            } else {
-//                compound.setValue("id", -1)
-//            }
-//        }
-//    }
+    def writeToNBT(data: NBTCompound): Unit = {
+        val inventory = data.createList("mainInventory", EnumNBTEnd)
+        for (i <- mainInventory.indices) {
+            val compound = inventory.createCompound()
+            val itemStack = mainInventory(i)
 
-//    def readFromNBT(data: NBTCompound): Unit = {
-//        val inventory = data.getList("mainInventory")
-//        for (i <- mainInventory.indices) {
-//            val compound = inventory.getCompound(i)
-//            val id: Int = compound.getInt("id")
-//            if (id != -1) {
-//                val itemStack = new ItemPack(Item.getItemById(id), compound.getInt("sizeOrMass"))
-//                mainInventory(i) = itemStack
-//            }
-//        }
-//    }
+            if (itemStack != null) {
+                compound.setValue("id", Item.getIdFromItem(itemStack.item))
+                compound.setValue("sizeOrMass", if(itemStack.item.itemType!= ItemType.MASS) itemStack.stackSize else itemStack.stackMass)
+
+            } else {
+                compound.setValue("id", -1)
+            }
+        }
+    }
+
+    def readFromNBT(data: NBTCompound): Unit = {
+        val inventory = data.getList("mainInventory")
+        for (i <- mainInventory.indices) {
+            val compound = inventory.getCompound(i)
+            val id: Int = compound.getInt("id")
+            if (id != -1) {
+                val itemStack = new ItemStack(Item.getItemById(id), compound.getInt("sizeOrMass"))
+                mainInventory(i) = itemStack
+            }
+        }
+    }
 
 }
 

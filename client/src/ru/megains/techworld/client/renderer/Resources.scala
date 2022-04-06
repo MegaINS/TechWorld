@@ -10,6 +10,8 @@ object Resources {
 
     val PLAYER_INVENTORY: TTexture = TextureManager.getTexture("textures/gui/playerInventory.png")
 
+    val CHEST_INVENTORY: TTexture = TextureManager.getTexture("textures/gui/chestInventory.png")
+
     val STACK_SELECT: TTexture = TextureManager.getTexture("textures/gui/stackSelect.png")
 
     val HOT_BAR: TTexture = TextureManager.getTexture("textures/gui/hotBar.png")

@@ -23,20 +23,20 @@ object RenderEntityCow extends TRenderEntity with TModel {
     }
 
 
-    override def render(entity: Entity, world: World, shader: Shader): Boolean = {
+    override def render(entity: Entity, world: World, shader: Shader,partialTicks:Double): Boolean = {
 
-        zPos = entity.posZ
-        xPos = entity.posX
-        yPos = entity.posY
 
+        xPos = (entity.lastTickPosX + (entity.posX- entity.lastTickPosX)*partialTicks).toFloat
+        yPos =(entity.lastTickPosY + (entity.posY - entity.lastTickPosY)*partialTicks).toFloat
+        zPos = (entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ)*partialTicks).toFloat
 
         shader.setUniform("modelMatrix", buildViewMatrix())
         entityModel.entityCube.render()
 
 
-        entityModel.posX = entity.posX
-        entityModel.posY = entity.posY
-        entityModel.posZ = entity.posZ
+        entityModel.posX = (entity.lastTickPosX + (entity.posX - entity.lastTickPosX)*partialTicks).toFloat
+        entityModel.posY = (entity.lastTickPosY + (entity.posY - entity.lastTickPosY)*partialTicks).toFloat
+        entityModel.posZ = (entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ)*partialTicks).toFloat
         entityModel.yRot = -entity.rotYaw
 
         entityModel.setRotationAngles(a,20,1,1,1,1,entity)

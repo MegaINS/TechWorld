@@ -1,7 +1,8 @@
 package ru.megains.techworld.common.register
 
-import ru.megains.techworld.common.block.{Block, BlockAir, BlockGlass}
+import ru.megains.techworld.common.block.{Block, BlockAir, BlockChest, BlockGlass}
 import ru.megains.techworld.common.entity.mob.EntityCow
+import ru.megains.techworld.common.tileentity.TileEntityChest
 import ru.megains.techworld.common.utils.Logger
 
 object Bootstrap extends Logger {
@@ -39,6 +40,7 @@ object Bootstrap extends Logger {
 
         gameRegister.registerBlock(10, new Block("log_birch"))
         gameRegister.registerBlock(11, new Block("log_oak"))
+        gameRegister.registerBlock(12, new BlockChest("chest"))
         //gameRegister.registerBlock(12, new BlockLeaves("leaves_birch"))
        // gameRegister.registerBlock(13, new BlockLeaves("leaves_oak"))
     }
@@ -50,7 +52,7 @@ object Bootstrap extends Logger {
     }
 
     def initTileEntity(gameRegister: TGameRegister): Unit = {
-        //  gameRegister.registerTileEntity(0, classOf[TileEntityChest])
+          gameRegister.registerTileEntity(0, classOf[TileEntityChest])
     }
 
     def initEntity(gameRegister: TGameRegister): Unit = {

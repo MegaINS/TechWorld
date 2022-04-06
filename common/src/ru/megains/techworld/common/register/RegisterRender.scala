@@ -3,13 +3,13 @@ package ru.megains.techworld.common.register
 import scala.collection.mutable
 
 
-class RegisterRender[T] {
+class RegisterRender[K,T] {
 
-    val idRender: mutable.HashMap[Int, T] = new mutable.HashMap[Int, T]
+    val idRender: mutable.HashMap[K, T] = new mutable.HashMap[K, T]
 
-    def registerRender(id: Int, aRender: T): Unit = {
+    def registerRender(id: K, aRender: T): Unit = {
         idRender += id -> aRender
     }
 
-    def getRender(id: Int): T = idRender.getOrElse(id,default = null.asInstanceOf[T])
+    def getRender(id: K): T = idRender.getOrElse(id,default = null.asInstanceOf[T])
 }

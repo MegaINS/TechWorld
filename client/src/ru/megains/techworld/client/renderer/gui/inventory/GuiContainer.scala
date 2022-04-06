@@ -10,6 +10,7 @@ import ru.megains.techworld.common.container.Container
 import ru.megains.techworld.common.entity.EntityPlayer
 import ru.megains.techworld.common.inventory.Slot
 import ru.megains.techworld.common.item.itemstack.ItemStack
+import ru.megains.techworld.common.network.packet.play.client.CPacketCloseWindow
 
 import java.awt.Color
 
@@ -52,7 +53,7 @@ abstract class GuiContainer(val inventorySlots: Container) extends GuiScreen {
    override def keyTyped(typedChar: Char, keyCode: Int): Unit = {
         keyCode match {
             case GLFW_KEY_E | GLFW_KEY_ESCAPE =>
-                // tar.playerController.net.sendPacket(new CPacketCloseWindow)
+                 game.playerController.net.sendPacket(new CPacketCloseWindow)
                 game.setScreen(null)
             case _ =>
         }
@@ -69,7 +70,6 @@ abstract class GuiContainer(val inventorySlots: Container) extends GuiScreen {
 
     override def mousePress(x: Int, y: Int, button: Int): Unit = {
         inventorySlots.mouseClicked(x-posX.toInt,y-posY.toInt,button,game.player)
-       // player.openContainer.mouseClicked(x-posX, y-posY, button, player)
         game.playerController.windowClick(x-posX.toInt, y-posY.toInt, button, game.player)
     }
 

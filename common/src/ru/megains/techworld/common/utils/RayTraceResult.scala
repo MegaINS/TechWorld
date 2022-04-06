@@ -39,8 +39,8 @@ class RayTraceResult(var traceType:RayTraceType = RayTraceType.VOID) {
 object RayTraceResult{
 
 
-    def apply(): RayTraceResult = new RayTraceResult()
+    def apply(): RayTraceResult = VOID
     def apply(blockState: BlockState,hitVec: Vector3d,side: Direction): RayTraceResult = new RayTraceResult(blockState,hitVec,side)
 
-    val VOID: RayTraceResult = apply()
+    val VOID: RayTraceResult = new RayTraceResult()
 }

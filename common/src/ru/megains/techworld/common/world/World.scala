@@ -5,6 +5,7 @@ import ru.megains.techworld.common.block.{BlockAir, BlockPos, BlockState}
 import ru.megains.techworld.common.entity.{Entity, EntityPlayer}
 import ru.megains.techworld.common.physics.BoundingBox
 import ru.megains.techworld.common.register.Blocks
+import ru.megains.techworld.common.tileentity.TileEntity
 import ru.megains.techworld.common.utils.{Direction, RayTraceResult}
 
 import java.util
@@ -13,7 +14,7 @@ import scala.collection.mutable.ArrayBuffer
 
 abstract class World() {
 
-
+    val tickableTileEntities: ArrayBuffer[TileEntity] = new ArrayBuffer[TileEntity]()
     var playerEntities: ArrayBuffer[EntityPlayer] = new ArrayBuffer[EntityPlayer]
     var loadedEntityList: ArrayBuffer[Entity] = new ArrayBuffer[Entity]
     val eventListeners: ArrayBuffer[IWorldEventListener] = ArrayBuffer[IWorldEventListener]()
@@ -22,6 +23,7 @@ abstract class World() {
 
     def update(): Unit = {
         loadedEntityList.foreach(_.update())
+        tickableTileEntities.foreach(_.update(this))
     }
 
     def getChunkFromBlockPos(x: Int, y: Int, z: Int): Chunk = {
@@ -44,7 +46,34 @@ abstract class World() {
     //        re
     //        setBlock(new BlockState(Blocks.air,pos.x,pos.y,pos.z))
     //    }
+    def getTileEntity(x: Int, y: Int, z: Int): TileEntity ={
+        //if (!blockPos.isValid(this)){
+        //   null
+        //} else {
+        getChunkFromBlockPos(x,y,z).getTileEntity(x,y,z)
+        // }
+    }
+    def setTileEntity(x: Int, y: Int, z: Int, tileEntityIn: TileEntity): Unit = {
 
+        val chunk = getChunkFromBlockPos(x,y,z)
+        if (chunk != null) chunk.addTileEntity(x,y,z, tileEntityIn)
+        addTileEntity(tileEntityIn)
+
+    }
+    def addTileEntity(tile: TileEntity): Unit = {
+        tickableTileEntities += tile
+    }
+    def removeTileEntity(x: Int, y: Int, z: Int): Unit = {
+
+
+        val chunk = getChunkFromBlockPos(x,y,z)
+        if (chunk != null) {
+            tickableTileEntities -= chunk.getTileEntity(x,y,z)
+            chunk.removeTileEntity(x,y,z)
+
+        }
+
+    }
     def setBlock(blockState: BlockState): Unit = {
 
 
@@ -320,6 +349,8 @@ abstract class World() {
         }
         result
     }
+
+
 }
 
 

@@ -25,7 +25,7 @@ object RenderEntityPlayer extends TRenderEntity with TModel {
 
     }
 
-    override def render(entity: Entity, world: World, shader: Shader): Boolean = {
+    override def render(entity: Entity, world: World, shader: Shader,partialTicks:Double): Boolean = {
 
         zPos = entity.posZ
         xPos = entity.posX

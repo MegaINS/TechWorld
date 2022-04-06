@@ -3,8 +3,11 @@ package ru.megains.techworld.client.register
 import ru.megains.techworld.client.entity.EntityOtherPlayerC
 import ru.megains.techworld.client.renderer.block.{RenderBlockGlass, RenderBlockGrass, RenderBlockLeaves, RenderBlockLog}
 import ru.megains.techworld.client.renderer.entity.{RenderEntityCow, RenderEntityPlayer}
+import ru.megains.techworld.client.renderer.gui.inventory.GuiChest
+import ru.megains.techworld.common.entity.EntityPlayer
 import ru.megains.techworld.common.entity.mob.EntityCow
-import ru.megains.techworld.common.register.{Bootstrap => BootstrapCommon}
+import ru.megains.techworld.common.register.{GameRegister, Bootstrap => BootstrapCommon}
+import ru.megains.techworld.common.tileentity.{TileEntity, TileEntityChest}
 import ru.megains.techworld.common.utils.Logger
 
 object Bootstrap extends Logger {
@@ -46,8 +49,10 @@ object Bootstrap extends Logger {
     }
 
     def initTileEntity(): Unit = {
-      //  BootstrapCommon.initTileEntity(GameRegisterRender)
-        // GameRegister.registerTileEntityRender(classOf[TileEntityChest],RenderChest)
+         BootstrapCommon.initTileEntity(GameRegisterRender)
+        GameRegisterRender.registerGuiContainer(classOf[TileEntityChest],(player:EntityPlayer,tileEntity:TileEntity)=>{new GuiChest(player.inventory,tileEntity.asInstanceOf[TileEntityChest])} )
+
+       // GameRegisterRender.registerTileEntityRender(classOf[TileEntityChest],RenderChest)
     }
 
     def initEntity(): Unit = {

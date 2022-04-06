@@ -45,7 +45,7 @@ class CPacketPlayerMouse extends Packet[INetHandlerPlayServer]{
         if( rayTraceType!=RayTraceType.VOID){
             rayTraceResult = new RayTraceResult(buf.readBlockState(),new Vector3d(buf.readDouble(),buf.readDouble(),buf.readDouble()),Direction.DIRECTIONAL_BY_ID(buf.readByte()))
         }else{
-            rayTraceResult = new RayTraceResult()
+            rayTraceResult = RayTraceResult.VOID
         }
 
         blockState = buf.readBlockState()

@@ -4,11 +4,11 @@ import ru.megains.techworld.client.entity.EntityOtherPlayerC
 import ru.megains.techworld.client.{PlayerController, TechWorld}
 import ru.megains.techworld.client.renderer.gui.{GuiDownloadTerrain, GuiScreen}
 import ru.megains.techworld.client.world.WorldClient
-import ru.megains.techworld.common.entity.EntityLivingBase
+import ru.megains.techworld.common.entity.{EntityLivingBase, GameType}
 import ru.megains.techworld.common.network.NetworkManager
 import ru.megains.techworld.common.network.handler.{INetHandler, INetHandlerPlayClient}
 import ru.megains.techworld.common.network.packet.Packet
-import ru.megains.techworld.common.network.packet.play.server.{SPacketBlockChange, SPacketChunkData, SPacketDestroyEntities, SPacketEntity, SPacketEntityTeleport, SPacketEntityVelocity, SPacketJoinGame, SPacketMobSpawn, SPacketMultiBlockChange, SPacketPlayerPosLook, SPacketSetSlot, SPacketSpawnPlayer, SPacketUnloadChunk, SPacketWindowItems}
+import ru.megains.techworld.common.network.packet.play.server.{SPacketBlockChange, SPacketChangeGameState, SPacketChunkData, SPacketDestroyEntities, SPacketEntity, SPacketEntityTeleport, SPacketEntityVelocity, SPacketJoinGame, SPacketMobSpawn, SPacketMultiBlockChange, SPacketPlayerPosLook, SPacketSetSlot, SPacketSpawnPlayer, SPacketUnloadChunk, SPacketWindowItems}
 import ru.megains.techworld.common.register.Entities
 import ru.megains.techworld.common.utils.Logger
 import ru.megains.techworld.common.world.Chunk
@@ -112,50 +112,57 @@ class NetHandlerPlayClient(game: TechWorld, previousScene: GuiScreen, val netMan
             val chunk: Chunk = worldClient.getChunk(packetIn.position)
             chunk.blockStorage = packetIn.blockStorage
             chunk.isEmpty = packetIn.isEmpty
-            //packetIn.tileEntityMap.foreach(chunk.addTileEntity)
+            packetIn.tileEntityMap.foreach(chunk.addTileEntity)
             game.rendererGame.rendererWorld.reRender(packetIn.position)
         }
 
 
     }
 
-        def handleBlockChange(packetIn: SPacketBlockChange): Unit = {
-            worldClient.invalidateRegionAndSetBlock(packetIn.block)
-        }
+    def handleBlockChange(packetIn: SPacketBlockChange): Unit = {
+        worldClient.invalidateRegionAndSetBlock(packetIn.block)
+    }
 
-        def handleMultiBlockChange(packetIn: SPacketMultiBlockChange): Unit = {
-            for (blockData <- packetIn.changedBlocks) {
-                worldClient.invalidateRegionAndSetBlock(blockData)
-            }
+    def handleMultiBlockChange(packetIn: SPacketMultiBlockChange): Unit = {
+        for (blockData <- packetIn.changedBlocks) {
+            worldClient.invalidateRegionAndSetBlock(blockData)
         }
+    }
 
-        override def handleSetSlot(packetIn: SPacketSetSlot): Unit = {
-            if (packetIn.slot == -1) {
-                game.player.inventory.itemStack = packetIn.item
+    override def handleSetSlot(packetIn: SPacketSetSlot): Unit = {
+        if (packetIn.slot == -1) {
+            game.player.inventory.itemStack = packetIn.item
+        } else {
+            if (packetIn.windowId == -1) {
+                game.player.inventoryContainer.putStackInSlot(packetIn.slot, packetIn.item)
             } else {
                 game.player.openContainer.putStackInSlot(packetIn.slot, packetIn.item)
             }
 
+
         }
 
-        override def handleWindowItems(packetIn: SPacketWindowItems): Unit = {
-            val openContainer = game.player.openContainer
+    }
 
-            for (i <- packetIn.itemStacks.indices) {
-                openContainer.putStackInSlot(i, packetIn.itemStacks(i))
-            }
+    override def handleWindowItems(packetIn: SPacketWindowItems): Unit = {
+        val openContainer = game.player.openContainer
+
+        for (i <- packetIn.itemStacks.indices) {
+            openContainer.putStackInSlot(i, packetIn.itemStacks(i))
         }
+    }
+
     //
     //    override def handlePlayerListItem(packetIn: SPacketPlayerListItem): Unit = {
     //
     //    }
     //
-    //    override def handleChangeGameState(packetIn: SPacketChangeGameState): Unit = {
-    //        packetIn.state match {
-    //           // case 3 => gameController.playerController.setGameType(GameType(packetIn.value))
-    //            case _ =>
-    //        }
-    //    }
+    override def handleChangeGameState(packetIn: SPacketChangeGameState): Unit = {
+        packetIn.state match {
+            case 3 => game.player.gameType = GameType(packetIn.value)
+            case _ =>
+        }
+    }
 
     override def handleUnloadChunk(packetIn: SPacketUnloadChunk): Unit = {
         worldClient.doPreChunk(packetIn.position, loadChunk = false)
@@ -232,7 +239,7 @@ class NetHandlerPlayClient(game: TechWorld, previousScene: GuiScreen, val netMan
         }
     }
 
-    override def handleEntitySpawnMob(packetIn:SPacketMobSpawn): Unit = {
+    override def handleEntitySpawnMob(packetIn: SPacketMobSpawn): Unit = {
         val posX = packetIn.posX.toFloat / 32.0f
         val posY = packetIn.posY.toFloat / 32.0f
         val posZ = packetIn.posZ.toFloat / 32.0f
@@ -243,24 +250,24 @@ class NetHandlerPlayClient(game: TechWorld, previousScene: GuiScreen, val netMan
         entity.serverPosY = packetIn.posY
         entity.serverPosZ = packetIn.posZ
         //entity.rotationYawHead = (packetIn.func_149032_n * 360).toFloat / 256.0F
-//        val var11 = entity.getParts
-//        if (var11 != null) {
-//            val var12 = packetIn.func_149024_d - entity.getEntityId
-//            for (var13 <- 0 until var11.length) {
-//                var11(var13).setEntityId(var11(var13).getEntityId + var12)
-//            }
-//        }
+        //        val var11 = entity.getParts
+        //        if (var11 != null) {
+        //            val var12 = packetIn.func_149024_d - entity.getEntityId
+        //            for (var13 <- 0 until var11.length) {
+        //                var11(var13).setEntityId(var11(var13).getEntityId + var12)
+        //            }
+        //        }
         entity.id = packetIn.entityId
         entity.setPositionAndRotation(posX, posY, posZ, rotYaw, rotPitch)
         entity.motionX = (packetIn.motionX.toFloat / 8000.0F).toFloat
         entity.motionY = (packetIn.motionY.toFloat / 8000.0F).toFloat
         entity.motionZ = (packetIn.motionZ.toFloat / 8000.0F).toFloat
         worldClient.addEntityToWorld(packetIn.entityId, entity)
-       // val var14 = packetIn.func_149027_c
-       // if (var14 != null) entity.getDataWatcher.updateWatchedObjectsFromList(var14)
+        // val var14 = packetIn.func_149027_c
+        // if (var14 != null) entity.getDataWatcher.updateWatchedObjectsFromList(var14)
     }
 
-    override def handleDestroyEntities(packetIn:SPacketDestroyEntities):Unit = {
+    override def handleDestroyEntities(packetIn: SPacketDestroyEntities): Unit = {
         for (var2 <- packetIn.entitiesId.indices) {
             worldClient.removeEntityFromWorld(packetIn.entitiesId(var2))
         }

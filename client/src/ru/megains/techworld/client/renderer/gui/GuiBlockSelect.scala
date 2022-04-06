@@ -16,7 +16,7 @@ class GuiBlockSelect() extends GuiScreen {
     var block_z:Label = _
 
     override def init(): Unit = {
-        posY = 200
+        posY = 240
         posZ = 100
         name = new Label("Block select:")
         block_name = new Label(""){

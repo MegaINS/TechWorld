@@ -1,13 +1,14 @@
 package ru.megains.techworld.server.entity
 
 import ru.megains.techworld.common.block.BlockPos
-import ru.megains.techworld.common.container.{Container, InventoryListener}
+import ru.megains.techworld.common.container.{Container, ContainerPlayerInventory, InventoryListener}
 import ru.megains.techworld.common.entity.{Entity, EntityPlayer}
 import ru.megains.techworld.common.item.itemstack.ItemStack
 import ru.megains.techworld.common.network.NetworkManager
 import ru.megains.techworld.common.network.handler.INetHandler
 import ru.megains.techworld.common.network.packet.play.server.{SPacketDestroyEntities, SPacketSetSlot, SPacketWindowItems}
 import ru.megains.techworld.common.register.GameRegister
+import ru.megains.techworld.common.tileentity.TileEntityInventory
 import ru.megains.techworld.common.world.World
 import ru.megains.techworld.server.PlayerInteractionManager
 import ru.megains.techworld.server.world.WorldServer
@@ -45,6 +46,16 @@ class EntityPlayerS(val name:String,val interactionManager: PlayerInteractionMan
         openContainer.detectAndSendChanges()
     }
 
+    override def setContainer(world: World, x: Int, y: Int, z: Int): Unit = {
+        val tileEntity = world.getTileEntity(x, y, z)
+        tileEntity match {
+            case inv:TileEntityInventory =>
+                openContainer = inv.getContainer(this)
+                openContainer.addListener(this)
+            case _=>
+        }
+
+    }
 
     def worldServer:WorldServer = world.asInstanceOf[WorldServer]
 
@@ -58,7 +69,7 @@ class EntityPlayerS(val name:String,val interactionManager: PlayerInteractionMan
     }
 
     def sendSlotContents(containerToSend: Container, slotInd: Int, stack: ItemStack): Unit = {
-        connection.sendPacket(new SPacketSetSlot(-1, slotInd, stack))
+        connection.sendPacket(new SPacketSetSlot(if(containerToSend.isInstanceOf[ContainerPlayerInventory]) -1 else 0, slotInd, stack))
     }
 
     def updateCraftingInventory(containerToSend: Container, itemsList: Array[ItemStack]): Unit = {
@@ -76,15 +87,6 @@ class EntityPlayerS(val name:String,val interactionManager: PlayerInteractionMan
         //this.openContainer.onContainerClosed(this)
         this.openContainer = this.inventoryContainer
     }
-   // override def openGui(world: World, pos: BlockPos): Unit = {
-       // val tileEntity = world.getTileEntity(pos)
-//        tileEntity match {
-//            case inv:ATileEntityInventory =>
-//                openContainer = inv.getContainer(this)
-//                openContainer.addListener(this)
-//            case _=>
-//        }
 
-   // }
 
 }

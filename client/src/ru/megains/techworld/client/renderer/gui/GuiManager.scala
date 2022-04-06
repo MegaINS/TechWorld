@@ -65,7 +65,7 @@ class GuiManager(game: TechWorld) {
         if (guiScreen != null) guiScreen.resize(width, height)
     }
 
-    def render(): Unit = {
+    def render(partialTicks:Double): Unit = {
 
 
         glEnable(GL_STENCIL_TEST)
