@@ -10,7 +10,7 @@ import ru.megains.techworld.common.network.packet.handshake.client.CHandshake
 import ru.megains.techworld.common.network.packet.login.client.CPacketLoginStart
 import ru.megains.techworld.common.network.packet.login.server.SPacketLoginSuccess
 import ru.megains.techworld.common.network.packet.play.client.{CPacketClickWindow, CPacketCloseWindow, CPacketHeldItemChange, CPacketPlayer, CPacketPlayerAction, CPacketPlayerMouse}
-import ru.megains.techworld.common.network.packet.play.server.{SPacketBlockChange, SPacketChangeGameState, SPacketChunkData, SPacketDestroyEntities, SPacketEntity, SPacketEntityTeleport, SPacketEntityVelocity, SPacketJoinGame, SPacketMobSpawn, SPacketMultiBlockChange, SPacketPlayerPosLook, SPacketSetSlot, SPacketSpawnPlayer, SPacketUnloadChunk, SPacketWindowItems}
+import ru.megains.techworld.common.network.packet.play.server.{SPacketBlockChange, SPacketChangeGameState, SPacketChunkData, SPacketDestroyEntities, SPacketEntity, SPacketEntityTeleport, SPacketEntityVelocity, SPacketJoinGame, SPacketMobSpawn, SPacketMultiBlockChange, SPacketPlayerPosLook, SPacketSetSlot, SPacketSpawnObject, SPacketSpawnPlayer, SPacketUnloadChunk, SPacketWindowItems}
 import ru.megains.techworld.common.network.packet.status.client.{CPacketPing, CPacketServerQuery}
 import ru.megains.techworld.common.network.packet.status.server.{SPacketPong, SPacketServerInfo}
 
@@ -102,6 +102,9 @@ object ConnectionState {
         registerPacket(classOf[SPacketBlockChange])
         registerPacket(classOf[SPacketMultiBlockChange])
         registerPacket(classOf[SPacketChangeGameState])
+        registerPacket(classOf[SPacketSpawnObject])
+
+
 
 
         registerPacket(classOf[CPacketPlayer])

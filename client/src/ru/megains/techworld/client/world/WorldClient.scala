@@ -13,6 +13,7 @@ import scala.collection.mutable.ArrayBuffer
 class WorldClient(game: TechWorld) extends World {
 
 
+
     val entityList = new mutable.HashSet[Entity]()
 
     val entitySpawnQueue = new mutable.HashSet[Entity]()
@@ -91,4 +92,7 @@ class WorldClient(game: TechWorld) extends World {
     override def onEntityAdded(entity: Entity): Unit = {}
 
     override def getEntityByID(id: Int): Entity = if (game.player != null && game.player.id == id) game.player else entityHashSet.getOrElse(id, null)
+
+    override val isServer: Boolean = false
+    override val isClient: Boolean = true
 }

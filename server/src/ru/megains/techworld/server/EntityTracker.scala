@@ -1,7 +1,7 @@
 package ru.megains.techworld.server
 
-import ru.megains.techworld.common.entity.Entity
-import ru.megains.techworld.common.entity.mob.{EntityCow}
+import ru.megains.techworld.common.entity.{Entity, EntityItem}
+import ru.megains.techworld.common.entity.mob.EntityCow
 import ru.megains.techworld.server.entity.EntityPlayerS
 import ru.megains.techworld.server.world.WorldServer
 
@@ -30,7 +30,7 @@ class EntityTracker(world: WorldServer) {
             //            case _: EntityEgg => this.addEntityToTracker(par1Entity, 64, 10, true)
             //            case _: EntityPotion => this.addEntityToTracker(par1Entity, 64, 10, true)
             //            case _: EntityExpBottle => this.addEntityToTracker(par1Entity, 64, 10, true)
-            //            case _: EntityItem => this.addEntityToTracker(par1Entity, 64, 20, true)
+            case _: EntityItem => addEntityToTracker(entity, 64, 20, true)
             //            case _: EntityMinecart => this.addEntityToTracker(par1Entity, 80, 3, true)
             //            case _: EntityBoat => this.addEntityToTracker(par1Entity, 80, 3, true)
             //            case _: EntitySquid => this.addEntityToTracker(par1Entity, 64, 3, true)

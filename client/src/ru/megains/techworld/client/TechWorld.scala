@@ -5,6 +5,7 @@ import org.lwjgl.glfw.GLFW.{GLFW_KEY_M, _}
 import org.lwjgl.stb.STBImage.stbi_set_flip_vertically_on_load
 import ru.megains.techworld.client.entity.EntityPlayerC
 import ru.megains.techworld.client.register.{Bootstrap, GameRegisterRender}
+import ru.megains.techworld.client.renderer.entity.RenderEntityCow.log
 import ru.megains.techworld.client.renderer.gui.{GuiManager, GuiPlayerSelect, GuiScreen}
 import ru.megains.techworld.client.renderer.shader.ShaderManager
 import ru.megains.techworld.client.renderer.texture.TextureManager

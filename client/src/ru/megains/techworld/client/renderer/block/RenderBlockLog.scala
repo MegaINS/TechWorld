@@ -18,12 +18,14 @@ class RenderBlockLog(name: String) extends RenderBlockStandard (name){
 
     }
 
-    override def getTexture(blockState: BlockState, direction: Direction, world: World): TTexture = {
+    override def getTexture(direction: Direction): TTexture = {
         direction match {
             case Direction.UP |Direction.DOWN  => aTextureTop
             case _ => texture
         }
 
     }
+
+
 
 }

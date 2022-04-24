@@ -2,12 +2,13 @@ package ru.megains.techworld.server.entity
 
 import ru.megains.techworld.common.block.BlockPos
 import ru.megains.techworld.common.container.{Container, ContainerPlayerInventory, InventoryListener}
-import ru.megains.techworld.common.entity.{Entity, EntityPlayer}
+import ru.megains.techworld.common.entity.{Entity, EntityItem, EntityPlayer}
+import ru.megains.techworld.common.item.Item
 import ru.megains.techworld.common.item.itemstack.ItemStack
 import ru.megains.techworld.common.network.NetworkManager
 import ru.megains.techworld.common.network.handler.INetHandler
 import ru.megains.techworld.common.network.packet.play.server.{SPacketDestroyEntities, SPacketSetSlot, SPacketWindowItems}
-import ru.megains.techworld.common.register.GameRegister
+import ru.megains.techworld.common.register.{Blocks, GameRegister}
 import ru.megains.techworld.common.tileentity.TileEntityInventory
 import ru.megains.techworld.common.world.World
 import ru.megains.techworld.server.PlayerInteractionManager
@@ -29,6 +30,7 @@ class EntityPlayerS(val name:String,val interactionManager: PlayerInteractionMan
     GameRegister.getItems.foreach(i => inventory.addItemStackToInventory(new ItemStack(i, Random.nextInt(100))))
     val destroyedItemsNetCache = new ArrayBuffer[Int]()
 
+    var a = 0
 
     override def update(): Unit = {
         super.update()
@@ -44,6 +46,18 @@ class EntityPlayerS(val name:String,val interactionManager: PlayerInteractionMan
         }
 
         openContainer.detectAndSendChanges()
+
+        a+=1
+        if(a == 1 ){
+            val entityItem = new EntityItem()
+            entityItem.setItem(new ItemStack(Item.getItemFromBlock(Blocks.grass)))
+            entityItem.setPosition(posX,posY + 20,posZ)
+            entityItem.world = world
+            world.spawnEntityInWorld(entityItem)
+        }else if(a ==100 ){
+            a = 0
+        }
+
     }
 
     override def setContainer(world: World, x: Int, y: Int, z: Int): Unit = {

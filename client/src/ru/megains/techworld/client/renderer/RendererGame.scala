@@ -8,10 +8,12 @@ import ru.megains.techworld.client.renderer.shader.ShaderManager
 import ru.megains.techworld.client.renderer.shader.data.Shader
 import ru.megains.techworld.client.utils.Frustum
 import ru.megains.techworld.client.world.WorldClient
+import ru.megains.techworld.common.entity.Entity
+import ru.megains.techworld.common.utils.Logger
 
 import java.nio.FloatBuffer
 
-class RendererGame(game:TechWorld) {
+class RendererGame(game:TechWorld) extends Logger{
 
     val Z_NEAR: Float = 0.01f
     val Z_FAR: Float = 2000f
@@ -26,6 +28,7 @@ class RendererGame(game:TechWorld) {
 
     var rendererWorld:RendererWorld = _
     var world:WorldClient = _
+    var entity:Entity = _
 
     def init(): Unit ={
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
@@ -44,15 +47,24 @@ class RendererGame(game:TechWorld) {
         world = newWorld
         if(rendererWorld!=null) rendererWorld = null
         rendererWorld = new RendererWorld(world)
+        entity = game.player
     }
 
     def render(partialTicks:Double): Unit = {
+
+
+//        worldCamera.setPerspective(Math.toRadians(game.settings.FOV).toFloat,game.window.width,game.window.height, Z_NEAR, Z_FAR)
+//        worldCamera.setPos(
+//            (entity.lastTickPosX + (entity.posX- entity.lastTickPosX)*partialTicks).toFloat,
+//            (entity.lastTickPosY + (entity.posY- entity.lastTickPosY)*partialTicks).toFloat + entity.levelView,
+//            (entity.lastTickPosZ + (entity.posZ- entity.lastTickPosZ)*partialTicks).toFloat)
+//        worldCamera.setRot(-entity.rotPitch, (entity.lastRotYaw + (entity.rotYaw - entity.lastRotYaw)*partialTicks).toFloat, 0)
 
         worldCamera.setPerspective(Math.toRadians(game.settings.FOV).toFloat,game.window.width,game.window.height, Z_NEAR, Z_FAR)
         worldCamera.setPos(game.player.posX, game.player.posY + game.player.levelView, game.player.posZ)
         worldCamera.setRot(-game.player.rotPitch, game.player.rotYaw, 0)
 
-
+       // log.info("posX " +(entity.posX- entity.lastTickPosX)*partialTicks)
        // val projectionMatrix: Matrix4f =  worldCamera.buildProjectionMatrix()
       //  val viewMatrix: Matrix4f = worldCamera.buildViewMatrix()
 

@@ -1,9 +1,9 @@
 package ru.megains.techworld.server
 
-import ru.megains.techworld.common.entity.{Entity, EntityLivingBase, EntityPlayer}
+import ru.megains.techworld.common.entity.{Entity, EntityItem, EntityLivingBase, EntityPlayer}
 import ru.megains.techworld.common.network.handler.INetHandler
 import ru.megains.techworld.common.network.packet.Packet
-import ru.megains.techworld.common.network.packet.play.server.{SPacketEntity, SPacketEntityTeleport, SPacketEntityVelocity, SPacketMobSpawn, SPacketSpawnPlayer}
+import ru.megains.techworld.common.network.packet.play.server.{SPacketEntity, SPacketEntityTeleport, SPacketEntityVelocity, SPacketMobSpawn, SPacketSpawnObject, SPacketSpawnPlayer}
 import ru.megains.techworld.server.entity.EntityPlayerS
 
 import scala.collection.mutable
@@ -76,6 +76,8 @@ class EntityTrackerEntry(val entity: Entity, blocksDistance: Int, updateFrequenc
         entity match {
             case entityPlayer: EntityPlayer =>
                 new SPacketSpawnPlayer(entityPlayer)
+            case entityItem: EntityItem =>
+                new SPacketSpawnObject(entityItem,2,true)
             case _ =>
                 new SPacketMobSpawn(entity.asInstanceOf[EntityLivingBase])
         }
@@ -238,7 +240,7 @@ class EntityTrackerEntry(val entity: Entity, blocksDistance: Int, updateFrequenc
                 val var13 = entity.motionX - motionX
                 val var15 = entity.motionY - motionY
                 val var17 = entity.motionZ - motionZ
-                val var19 = 0.02D
+                val var19 = 0.002D
                 val var21 = var13 * var13 + var15 * var15 + var17 * var17
                 if (var21 > var19 * var19 || var21 > 0.0D && entity.motionX == 0.0D && entity.motionY == 0.0D && entity.motionZ == 0.0D) {
                     motionX = entity.motionX

@@ -3,7 +3,7 @@ package ru.megains.techworld.common.network.packet.play.server
 import ru.megains.techworld.common.network.handler.INetHandlerPlayClient
 import ru.megains.techworld.common.network.packet.{Packet, PacketBuffer}
 
-class SPacketEntityVelocity extends Packet[INetHandlerPlayClient]{
+class SPacketEntityVelocity extends Packet[INetHandlerPlayClient] {
 
     var entityId: Int = 0
     var motionX: Int = 0
@@ -17,6 +17,7 @@ class SPacketEntityVelocity extends Packet[INetHandlerPlayClient]{
         motionX = (motionXIn *8000F).toInt
         motionY = (motionYIn *8000F).toInt
         motionZ = (motionZIn *8000F).toInt
+
 
 
     }

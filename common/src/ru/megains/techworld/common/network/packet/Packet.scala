@@ -1,8 +1,9 @@
 package ru.megains.techworld.common.network.packet
 
 import ru.megains.techworld.common.network.handler.INetHandler
+import ru.megains.techworld.common.utils.Logger
 
-abstract class Packet[T <: INetHandler] {
+abstract class Packet[T <: INetHandler] extends Logger{
 
     def isImportant = false
 

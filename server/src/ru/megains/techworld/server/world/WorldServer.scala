@@ -32,4 +32,7 @@ class WorldServer extends World {
     }
 
     override def getEntityByID(id: Int): Entity = entityIdMap.get(id).orNull
+
+    override val isServer: Boolean = true
+    override val isClient: Boolean = false
 }

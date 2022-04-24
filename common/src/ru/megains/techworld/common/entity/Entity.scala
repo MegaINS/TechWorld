@@ -1,13 +1,14 @@
 package ru.megains.techworld.common.entity
 
 import org.joml.Vector3d
+import ru.megains.techworld.common.nbt.tag.NBTCompound
 import ru.megains.techworld.common.physics.BoundingBox
-import ru.megains.techworld.common.utils.{Direction, RayTraceResult}
+import ru.megains.techworld.common.utils.{Direction, Logger, RayTraceResult}
 import ru.megains.techworld.common.world.World
 
 import scala.collection.mutable
 
-abstract class Entity(wight: Float, height: Float,val levelView:Float) {
+abstract class Entity(wight: Float, height: Float,val levelView:Float) extends Logger{
 
 
     var side:Direction = Direction.NONE
@@ -40,6 +41,9 @@ abstract class Entity(wight: Float, height: Float,val levelView:Float) {
     var lastTickPosX = .0
     var lastTickPosY = .0
     var lastTickPosZ = .0
+    var lastRotYaw = .0
+    var lastRotPitch = .0
+
 
     var world: World = _
     var chunkCoordX: Int = 0
@@ -83,6 +87,9 @@ abstract class Entity(wight: Float, height: Float,val levelView:Float) {
         lastTickPosX = posX
         lastTickPosY = posY
         lastTickPosZ = posZ
+        lastRotYaw = rotYaw
+        lastRotPitch = rotPitch
+
     }
 
     def setVelocity(motionXIn: Float, motionYIn: Float, motionZIn: Float): Unit = {
@@ -125,6 +132,11 @@ abstract class Entity(wight: Float, height: Float,val levelView:Float) {
 
 
     def setPosition(x: Float, y: Float, z: Float): Unit = {
+
+        lastTickPosX = x
+        lastTickPosY = y
+        lastTickPosZ = z
+
         posX = x
         posY = y
         posZ = z
@@ -298,6 +310,15 @@ abstract class Entity(wight: Float, height: Float,val levelView:Float) {
     override def hashCode(): Int = {
         val state = Seq(id)
         state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
+    }
+
+    def writeToNBT(compound: NBTCompound): Unit = {
+
+
+    }
+
+    def readFromNBT(compound: NBTCompound): Unit = {
+
     }
 }
 

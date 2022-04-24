@@ -14,6 +14,9 @@ import scala.collection.mutable.ArrayBuffer
 
 abstract class World() {
 
+
+    val isServer: Boolean
+    val isClient: Boolean
     val tickableTileEntities: ArrayBuffer[TileEntity] = new ArrayBuffer[TileEntity]()
     var playerEntities: ArrayBuffer[EntityPlayer] = new ArrayBuffer[EntityPlayer]
     var loadedEntityList: ArrayBuffer[Entity] = new ArrayBuffer[Entity]
@@ -22,7 +25,7 @@ abstract class World() {
 
 
     def update(): Unit = {
-        loadedEntityList.foreach(_.update())
+        loadedEntityList.clone().foreach(_.update())
         tickableTileEntities.foreach(_.update(this))
     }
 
@@ -251,7 +254,7 @@ abstract class World() {
 
 
             getBlock(x, y, z) match {
-                case blockState: BlockState if (blockState.block == BlockAir) =>
+                case blockState: BlockState if blockState.block == BlockAir =>
                 case blockState =>
                     aabbs ++= blockState.getSelectedBlockBody
             }

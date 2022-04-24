@@ -2,9 +2,9 @@ package ru.megains.techworld.client.register
 
 import ru.megains.techworld.client.entity.EntityOtherPlayerC
 import ru.megains.techworld.client.renderer.block.{RenderBlockGlass, RenderBlockGrass, RenderBlockLeaves, RenderBlockLog}
-import ru.megains.techworld.client.renderer.entity.{RenderEntityCow, RenderEntityPlayer}
+import ru.megains.techworld.client.renderer.entity.{RenderEntityCow, RenderEntityItem, RenderEntityPlayer}
 import ru.megains.techworld.client.renderer.gui.inventory.GuiChest
-import ru.megains.techworld.common.entity.EntityPlayer
+import ru.megains.techworld.common.entity.{EntityItem, EntityPlayer}
 import ru.megains.techworld.common.entity.mob.EntityCow
 import ru.megains.techworld.common.register.{GameRegister, Bootstrap => BootstrapCommon}
 import ru.megains.techworld.common.tileentity.{TileEntity, TileEntityChest}
@@ -60,5 +60,6 @@ object Bootstrap extends Logger {
 
         GameRegisterRender.registerEntity(0,classOf[EntityOtherPlayerC], RenderEntityPlayer)
         GameRegisterRender.registerEntityRender(classOf[EntityCow], RenderEntityCow)
+        GameRegisterRender.registerEntityRender(classOf[EntityItem], RenderEntityItem)
     }
 }

@@ -4,11 +4,11 @@ import ru.megains.techworld.client.entity.EntityOtherPlayerC
 import ru.megains.techworld.client.{PlayerController, TechWorld}
 import ru.megains.techworld.client.renderer.gui.{GuiDownloadTerrain, GuiScreen}
 import ru.megains.techworld.client.world.WorldClient
-import ru.megains.techworld.common.entity.{EntityLivingBase, GameType}
+import ru.megains.techworld.common.entity.{Entity, EntityItem, EntityLivingBase, GameType}
 import ru.megains.techworld.common.network.NetworkManager
 import ru.megains.techworld.common.network.handler.{INetHandler, INetHandlerPlayClient}
 import ru.megains.techworld.common.network.packet.Packet
-import ru.megains.techworld.common.network.packet.play.server.{SPacketBlockChange, SPacketChangeGameState, SPacketChunkData, SPacketDestroyEntities, SPacketEntity, SPacketEntityTeleport, SPacketEntityVelocity, SPacketJoinGame, SPacketMobSpawn, SPacketMultiBlockChange, SPacketPlayerPosLook, SPacketSetSlot, SPacketSpawnPlayer, SPacketUnloadChunk, SPacketWindowItems}
+import ru.megains.techworld.common.network.packet.play.server.{SPacketBlockChange, SPacketChangeGameState, SPacketChunkData, SPacketDestroyEntities, SPacketEntity, SPacketEntityTeleport, SPacketEntityVelocity, SPacketJoinGame, SPacketMobSpawn, SPacketMultiBlockChange, SPacketPlayerPosLook, SPacketSetSlot, SPacketSpawnObject, SPacketSpawnPlayer, SPacketUnloadChunk, SPacketWindowItems}
 import ru.megains.techworld.common.register.Entities
 import ru.megains.techworld.common.utils.Logger
 import ru.megains.techworld.common.world.Chunk
@@ -222,7 +222,7 @@ class NetHandlerPlayClient(game: TechWorld, previousScene: GuiScreen, val netMan
     }
 
     override def handleEntityMovement(packetIn: SPacketEntity): Unit = {
-        val entity = worldClient.getEntityByID(packetIn.entityId)
+        val entity: Entity = worldClient.getEntityByID(packetIn.entityId)
 
         if (entity != null) {
             entity.serverPosX += packetIn.moveX
@@ -259,9 +259,9 @@ class NetHandlerPlayClient(game: TechWorld, previousScene: GuiScreen, val netMan
         //        }
         entity.id = packetIn.entityId
         entity.setPositionAndRotation(posX, posY, posZ, rotYaw, rotPitch)
-        entity.motionX = (packetIn.motionX.toFloat / 8000.0F).toFloat
-        entity.motionY = (packetIn.motionY.toFloat / 8000.0F).toFloat
-        entity.motionZ = (packetIn.motionZ.toFloat / 8000.0F).toFloat
+        entity.motionX = packetIn.motionX.toFloat / 8000.0F
+        entity.motionY = packetIn.motionY.toFloat / 8000.0F
+        entity.motionZ = packetIn.motionZ.toFloat / 8000.0F
         worldClient.addEntityToWorld(packetIn.entityId, entity)
         // val var14 = packetIn.func_149027_c
         // if (var14 != null) entity.getDataWatcher.updateWatchedObjectsFromList(var14)
@@ -270,6 +270,91 @@ class NetHandlerPlayClient(game: TechWorld, previousScene: GuiScreen, val netMan
     override def handleDestroyEntities(packetIn: SPacketDestroyEntities): Unit = {
         for (var2 <- packetIn.entitiesId.indices) {
             worldClient.removeEntityFromWorld(packetIn.entitiesId(var2))
+        }
+    }
+
+    override def handleSpawnObject(packetIn: SPacketSpawnObject): Unit = {
+        val var2: Float = packetIn.posX.toFloat / 32.0F
+        val var4: Float = packetIn.posY.toFloat / 32.0F
+        val var6: Float = packetIn.posZ.toFloat / 32.0F
+        var entity: Entity = null
+        //        if (packetIn.func_148993_l == 10) entity = EntityMinecart.createMinecart(this.clientWorldController, var2, var4, var6, packetIn.func_149009_m)
+        //        else if (packetIn.func_148993_l == 90) {
+        //            val var9 = this.clientWorldController.getEntityByID(packetIn.func_149009_m)
+        //            if (var9.isInstanceOf[EntityPlayer]) entity = new EntityFishHook(this.clientWorldController, var2, var4, var6, var9.asInstanceOf[EntityPlayer])
+        //            packetIn.func_149002_g(0)
+        //        }
+        //        else if (packetIn.func_148993_l == 60) entity = new EntityArrow(this.clientWorldController, var2, var4, var6)
+        //        else if (packetIn.func_148993_l == 61) entity = new EntitySnowball(this.clientWorldController, var2, var4, var6)
+        //        else if (packetIn.func_148993_l == 71) {
+        //            entity = new EntityItemFrame(this.clientWorldController, var2.toInt, var4.toInt, var6.toInt, packetIn.func_149009_m)
+        //            packetIn.func_149002_g(0)
+        //        }
+        //        else if (packetIn.func_148993_l == 77) {
+        //            entity = new EntityLeashKnot(this.clientWorldController, var2.toInt, var4.toInt, var6.toInt)
+        //            packetIn.func_149002_g(0)
+        //        }
+        //        else if (packetIn.func_148993_l == 65) entity = new EntityEnderPearl(this.clientWorldController, var2, var4, var6)
+        //        else if (packetIn.func_148993_l == 72) entity = new EntityEnderEye(this.clientWorldController, var2, var4, var6)
+        //        else if (packetIn.func_148993_l == 76) entity = new EntityFireworkRocket(this.clientWorldController, var2, var4, var6, null.asInstanceOf[ItemStack])
+        //        else if (packetIn.func_148993_l == 63) {
+        //            entity = new EntityLargeFireball(this.clientWorldController, var2, var4, var6, packetIn.func_149010_g.toDouble / 8000.0D, packetIn.func_149004_h.toDouble / 8000.0D, packetIn.func_148999_i.toDouble / 8000.0D)
+        //            packetIn.func_149002_g(0)
+        //        }
+        //        else if (packetIn.func_148993_l == 64) {
+        //            entity = new EntitySmallFireball(this.clientWorldController, var2, var4, var6, packetIn.func_149010_g.toDouble / 8000.0D, packetIn.func_149004_h.toDouble / 8000.0D, packetIn.func_148999_i.toDouble / 8000.0D)
+        //            packetIn.func_149002_g(0)
+        //        }
+        //        else if (packetIn.func_148993_l == 66) {
+        //            entity = new EntityWitherSkull(this.clientWorldController, var2, var4, var6, packetIn.func_149010_g.toDouble / 8000.0D, packetIn.func_149004_h.toDouble / 8000.0D, packetIn.func_148999_i.toDouble / 8000.0D)
+        //            packetIn.func_149002_g(0)
+        //        }
+        //        else if (packetIn.func_148993_l == 62) entity = new EntityEgg(this.clientWorldController, var2, var4, var6)
+        //        else if (packetIn.func_148993_l == 73) {
+        //            entity = new EntityPotion(this.clientWorldController, var2, var4, var6, packetIn.func_149009_m)
+        //            packetIn.func_149002_g(0)
+        //        }
+        //        else if (packetIn.func_148993_l == 75) {
+        //            entity = new EntityExpBottle(this.clientWorldController, var2, var4, var6)
+        //            packetIn.func_149002_g(0)
+        //        }
+        //        else if (packetIn.func_148993_l == 1) entity = new EntityBoat(this.clientWorldController, var2, var4, var6)
+        //        else if (packetIn.func_148993_l == 50) entity = new EntityTNTPrimed(this.clientWorldController, var2, var4, var6, null.asInstanceOf[EntityLivingBase])
+        //        else if (packetIn.func_148993_l == 51) entity = new EntityEnderCrystal(this.clientWorldController, var2, var4, var6)
+        //else if (packetIn.func_148993_l == 2) 
+        entity = new EntityItem()
+        entity.world = worldClient
+        entity.setPosition(var2, var4, var6)
+        entity.readFromNBT(packetIn.nbt)
+        //        else if (packetIn.func_148993_l == 70) {
+        //            entity = new EntityFallingBlock(this.clientWorldController, var2, var4, var6, Block.getBlockById(packetIn.func_149009_m & 65535), packetIn.func_149009_m >> 16)
+        //            packetIn.func_149002_g(0)
+        //        }
+        if (entity != null) {
+            entity.serverPosX = packetIn.posX
+            entity.serverPosY = packetIn.posY
+            entity.serverPosZ = packetIn.posZ
+            entity.rotPitch = (packetIn.rotPitch * 360).toFloat / 256.0F
+            entity.rotYaw = (packetIn.rotYaw * 360).toFloat / 256.0F
+            //            val var12 = entity.getParts
+            //            if (var12 != null) {
+            //                val var10 = packetIn.func_149001_c - entity.getEntityId
+            //                for (var11 <- 0 until var12.length) {
+            //                    var12(var11).setEntityId(var12(var11).getEntityId + var10)
+            //                }
+            //            }
+            entity.id = packetIn.entityId
+            worldClient.addEntityToWorld(packetIn.entityId, entity)
+            if (packetIn.isMotion) {
+                if (packetIn.entityClassId == 60) {
+                    val var13 = worldClient.getEntityByID(packetIn.entityId)
+                    if (var13.isInstanceOf[EntityLivingBase]) {
+                        //val var14 = entity.asInstanceOf[EntityArrow]
+                        // var14.shootingEntity = var13
+                    }
+                }
+                entity.setVelocity(packetIn.motionX.toFloat / 8000.0F, packetIn.motionY.toFloat / 8000.0F, packetIn.motionZ.toFloat / 8000.0F)
+            }
         }
     }
 }

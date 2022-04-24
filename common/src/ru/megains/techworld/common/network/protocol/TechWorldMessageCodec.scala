@@ -25,7 +25,9 @@ class  TechWorldMessageCodec extends ByteToMessageCodec[Packet[_<:INetHandler]] 
         val size = out.readableBytes()
         val name = ConnectionState.getFromPacket(msg).name
         val packetName = msg.getClass.getSimpleName
-        //log.info(s"Encoder $name, packet $packetName, id $id, size $size")
+        // log.info(s"Encoder $name, packet $packetName, id $id, size $size")
+
+
     }
 
     override def decode(ctx: ChannelHandlerContext, in: ByteBuf, out: util.List[AnyRef]): Unit = {
@@ -42,7 +44,9 @@ class  TechWorldMessageCodec extends ByteToMessageCodec[Packet[_<:INetHandler]] 
 
             val packetName = packet.getClass.getSimpleName
 
-           // log.info(s"Decoder $name, packet $packetName, id $id, size $size")
+            // log.info(s"Decoder $name, packet $packetName, id $id, size $size")
+
+
             packet.readPacketData(buffer)
 
             if (in.readableBytes > 0) throw new IOException("Packet was larger than I expected, found " + in.readableBytes + " bytes extra whilst reading packet " + id)
